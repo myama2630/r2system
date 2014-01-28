@@ -14,14 +14,17 @@
       <th><%= Engineorder.human_attribute_name('allocated_date') %></th>
       <th><%= Engineorder.human_attribute_name('shipped_date') %></th>
       <th><%= Engineorder.human_attribute_name('returning_date') %></th>
-
+      <% if current_user.yesOffice? %>
+        <th colspan=8 rowspan=2>作業登録</th> <!-- YES本社の人の作業数だけ列を繋げる -->
+      <% elsif current_user.yesBranch? %>
+        <th colspan=8 rowspan=2>作業登録</th> <!-- YES	点の人の作業数だけ列を繋げる -->
+      <% end %>
 </tr>
 <tr>
       <th><%= Engineorder.human_attribute_name('old_engine_id') %></th>
       <th><%= Engineorder.human_attribute_name('new_engine_id') %></th>
-      <th><%= Engineorder.human_attribute_name('branch_id') %></th>
-      <th><%= Engineorder.human_attribute_name('sending_place_id') %></th>
-
+      <th colspan=2><%= Engineorder.human_attribute_name('branch_id') %></th>
+      <th colspan=2><%= Engineorder.human_attribute_name('sending_place_id') %></th>
 </tr>
   </thead>
 
@@ -50,10 +53,16 @@
         <td  rowspan="2"><%= link_to '削除', engineorder, method: :delete, data: { confirm: '削除してもよろしいですか？' }, class: "workregist_del" %></td>
 </tr>
 <tr> 
-        <td><%= Engine.find(engineorder.old_engine_id).engine_name unless engineorder.old_engine_id.nil?%></td>
-        <td><%= Engine.find(engineorder.new_engine_id).engine_name unless engineorder.new_engine_id.nil?%></td>
-        <td><%= Company.find(engineorder.branch_id).name unless engineorder.branch_id.nil? %></td>
-        <td><%= Company.find(engineorder.sending_place_id).name unless engineorder.sending_place_id.nil? %></td>
+        <td>
+          <%= Engine.find(engineorder.old_engine_id).engine_model_name unless engineorder.old_engine_id.nil?%></br>
+          <%= '('+Engine.find(engineorder.old_engine_id).serialno+')'  unless engineorder.old_engine_id.nil?%>
+        </td>
+        <td>
+          <%= Engine.find(engineorder.new_engine_id).engine_model_name unless engineorder.new_engine_id.nil?%></br>
+          <%= '('+Engine.find(engineorder.new_engine_id).serialno+')'  unless engineorder.new_engine_id.nil?%>
+          </td>
+        <td colspan=2><%= Company.find(engineorder.branch_id).name unless engineorder.branch_id.nil? %></td>
+        <td colspan=2><%= Company.find(engineorder.sending_place_id).name unless engineorder.sending_place_id.nil? %></td>
       </tr>
     <% end %>
   </tbody>

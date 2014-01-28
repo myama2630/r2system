@@ -26,7 +26,12 @@ class EnginesController < ApplicationController
         # 初期表示時：ログインユーザの部門コードという条件のみセッションへの保存
         # ハッシュのキーのような定型的な「識別子」っぽいものは、シンボルとした
         # 方が性能も可読性もあがると思いました。
-        @searched[:company_id] = current_user.company_id
+
+        #YES本社の場合は、初期表示では条件を使用しないため、
+        #本社以外の場合に、検索条件をセットする。
+        unless current_user.yesOffice?
+          @searched[:company_id] = current_user.company_id
+        end
       else
         # 検索ボタン押下時：画面入力された条件のセッションへの保存
         # 検索条件を取り込むときに、あらかじめ blank? なものは設定されていない

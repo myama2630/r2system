@@ -1,0 +1,45 @@
+<h1>未払一覧</h1>
+
+
+<table class="table table-striped table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>支払済</th>
+      <th>請求日</th>
+      <th>ステータス</th>
+      <th>依頼No</th>
+      <th>整備依頼日</th>
+      <th>整備開始日</th>
+      <th>整備完了日</th>
+      <th>エンジン型式</th>
+      <th>エンジンNo.</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @repairs.each do |repair| %>
+      <tr>
+        <td><%= check_box 'repair', 'billing_id', {}, true, false %></td>
+        <td><%= repair.billing_date %></td>
+        <td class="status_col"><%= repair.engine.status.name %></td>
+        <td><%= repair.order_no %></td>
+        <td>
+          <%= repair.order_date %>
+        </td>
+        <td><%= repair.start_date %></td>
+        <td>
+          <%= repair.finish_date %>
+        </td>
+        <td><%= repair.engine.engine_model_name %></td>
+        <td><%= repair.engine.serialno %></td>
+
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<br>
+<%= will_paginate @repairs, :previous_label=>'≪前', :next_label=>'次≫' %>
+<br>
+ <%= link_to "情報更新", "#", class: "btn btn-sm btn-default" %>
+<br><br>
+<%= link_to t('views.link_back'), root_path %>

@@ -9,8 +9,16 @@
 <% unless current_user.tender? %>
   <p><%= link_to '流通情報一覧', engineorders_path %></p>
 <% end %>
+
 <p><%= link_to '整備会社作業一覧', repairs_path %></p>
 <br>
+
+<h3>会計</h3>
+  <p><%= link_to '未請求一覧', repairs_notbilling_path %></p>
+  <p><%= link_to '未払一覧', repairs_notpayment_path %></p>
+<br>
+
+
 
 <% unless current_user.tender? %>
  <h3>マスター管理</h3>

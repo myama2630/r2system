@@ -5,6 +5,10 @@ class Repair < ActiveRecord::Base
   # Association
   belongs_to :engine
   
+  # Upload
+   mount_uploader :requestpaper, RequestpaperUploader
+   mount_uploader :checkpaper, CheckpaperUploader
+
   # 作業中の整備のみを抽出するスコープ (出荷日が設定済みなら作業完了)
   # ActiveRecord のスコープ機能を使って、よく使う「作業中？」条件に名前を付けて
   # います。

@@ -36,6 +36,9 @@ ja:
         finish_date: 完了日
         shipped_date: 出荷日
         returning_date: 返却日
+        change_comment: コメント(交換理由)
+        requestpaper: 整備依頼書
+        checkpaper: 組立チェックシート
       user:
         userid: ログインＩＤ
         code: 社員コード

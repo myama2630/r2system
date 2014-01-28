@@ -49,10 +49,14 @@
     <%= f.label :desirable_finish_date %><br>
     <%= f.date_select :desirable_finish_date, :use_month_numbers => true, :disabled=>disabled_data[:desirable_finish_date] %>
   </div>
-
+  <div class="field">
+    <%= f.label :requestpaper %><br>    
+    <%= f.file_field :requestpaper %> 
+  </div>
+<br>
   <% if current_user.yesOffice? %>
     <div class="actions">
-      <%= f.submit  :value => t('views.buttun_repairOrdered') %>
+      <%= f.submit :value => t('views.buttun_repairOrdered'), :confirm => t('views.buttun_repairOrdered')+t('views.confirm_msg') %>
     </div>
   <% end %>
 <br>

@@ -4,15 +4,57 @@ class RepairsController < ApplicationController
   # GET /repairs
   # GET /repairs.json
   def index
-    #@repairs = Repair.all.order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
-    #Yes本社の場合全件表示、それ以外の場合は自社の管轄のエンジンの整備依頼に対してのみ表示する。
-    #※管轄が変わると表示されなくなるので注意が必要…
-    if current_user.yesOffice?
-      @repairs = Repair.all.order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+
+  
+    # 1.初期表示（メニューなどからの遷移時）
+    #    ログインユーザの会社コードのみを条件に抽出
+    #    ①検索条件のクリア
+    #    ②ログインユーザの会社コードという条件のみセッションへの保存
+    # 2.検索ボタン押下時
+    #    画面入力された条件に対して抽出
+    #    ①検索条件のクリア
+    #    ②画面入力された条件のセッションへの保存
+    # 3.ページ繰り時
+    #    直前の検索条件をもとにページ繰り
+    #    ①検索条件のセッションからの取り出し
+    if params[:page].nil?
+      # ページ繰り以外
+      @searched = Hash.new
+      session[:searched] = @searched
+
+
+      if params[:commit].nil?
+        # 初期表示時：全件表示（条件なし）
+      else
+        # 検索ボタン押下時：画面入力された条件のセッションへの保存
+        # 検索条件を取り込むときに、あらかじめ blank? なものは設定されていないと見なす。(engineの検索と同じ)
+        params[:search].each do |key, val|
+          @searched[key.intern] = val unless val.blank?
+        end
+      end
     else
-      engines = Engine.where(company_id: current_user.company_id).pluck(:id)
-      @repairs = Repair.where(engine_id: engines).order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+      # ページ繰り時：検索条件のセッションからの取り出し
+      @searched = session[:searched]
     end
+
+    #エンジンの条件を設定する（エンジンに紐付く整備情報を取得するため）
+    arel = Engine.arel_table
+    cond = []
+
+    # エンジンステータス
+    if enginestatus_id = @searched[:enginestatus_id]
+      cond.push(arel[:enginestatus_id].eq enginestatus_id)
+    end
+
+    #Yes本社の場合全件表示、それ以外の場合は自社の管轄のエンジンを対象とする。
+    #※管轄が変わると表示されなくなるので注意が必要…
+    unless current_user.yesOffice?
+      cond.push(arel[:company_id].eq current_user.company_id)
+    end
+    
+    #対象のエンジン情報を取得して、そのエンジンに紐付く整備情報を取得する
+    @repairs = Repair.includes(:engine).where(cond.reduce(&:and)).order(Engine.arel_table[:enginestatus_id]).order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+
   end
 
   # GET /repairs/1
@@ -191,7 +233,30 @@ class RepairsController < ApplicationController
     end
 
   end
+
+  #整備依頼書のダウンロードを行う
+  def download_requestpaper
+    filename = URI.decode(Repair.find(params[:id]).requestpaper_url.to_s)
+    send_file("public/#{filename}")
+  end
+
+  #組立チェックシートのダウンロードを行う
+  def download_checkpaper
+    filename = URI.decode(Repair.find(params[:id]).checkpaper_url.to_s)
+    send_file("public/#{filename}")
+  end
   
+  #未請求のリストを表示する
+  def notbilling
+    @repairs = Repair.all.paginate(page: params[:page], per_page: 10)
+  end
+
+  #未支払いのリストを表示する
+  def notpayment
+    @repairs = Repair.all.paginate(page: params[:page], per_page: 10)
+  end
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_repair
@@ -200,6 +265,6 @@ class RepairsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def repair_params
-      params.require(:repair).permit(:id, :issue_no, :issue_date, :arrive_date, :start_date, :finish_date, :before_comment, :after_comment, :time_of_running, :day_of_test, :returning_comment, :arrival_comment, :order_no, :order_date, :construction_no, :desirable_finish_date, :estimated_finish_date, :engine_id, :enginestatus_id, :shipped_date)
+      params.require(:repair).permit(:id, :issue_no, :issue_date, :arrive_date, :start_date, :finish_date, :before_comment, :after_comment, :time_of_running, :day_of_test, :returning_comment, :arrival_comment, :order_no, :order_date, :construction_no, :desirable_finish_date, :estimated_finish_date, :engine_id, :enginestatus_id, :shipped_date, :requestpaper, :checkpaper)
     end
 end

@@ -165,7 +165,7 @@ class Engine < ActiveRecord::Base
 
   # 出荷済状態かどうか？
   def after_shipped?
-    status.id == Enginestatus.of_after_shipped.id
+    status.id == Enginestatus.of_after_shipping.id
   end
 
   # 廃却状態かどうか？

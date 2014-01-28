@@ -1,3 +1,12 @@
 // Place all the styles related to the Engines controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+/** for workregist format(th size) **/
+th.workregist{
+  width:70px;
+} 
+
+td.workregist-wide{
+  width:50px;
+} 

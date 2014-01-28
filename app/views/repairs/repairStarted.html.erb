@@ -24,7 +24,7 @@
   </div>
   <div class="actions">
     <br>
-    <%= f.submit  :value => t('views.buttun_repairStarted') %>
+    <%= f.submit :value => t('views.buttun_repairStarted'), :confirm => t('views.buttun_repairStarted')+t('views.confirm_msg') %>
   </div>
   <br>
   <%= link_to t('views.link_back'), repairs_path %>
@@ -52,7 +52,6 @@
   </div>
 <% end %>
 
-
   <div class="field">
     <%= f.label :construction_no %><br>
     <%= f.text_field :construction_no, :disabled=> disabled_data[:construction_no] %>
@@ -67,6 +66,14 @@
     <%= f.text_area :change_comment, :disabled=> true %>
   </div>
 
+  <div class="field">
+    <%= label_tag '整備依頼書' %><br>
+    <% if @repair.requestpaper.present? %>
+      <%= link_to "ダウンロード", requestpaper_path, class: "btn btn-xs btn-default" %>
+    <% else %>
+      ファイルなし
+    <% end %>
   </div>
+</div>
 </div>
 <% end %>

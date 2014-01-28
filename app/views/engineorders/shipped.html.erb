@@ -46,7 +46,7 @@
     </div>
 
     <div class="actions">
-      <%= f.submit  :value => t('views.buttun_shipped') %>
+      <%= f.submit :value => t('views.buttun_shipped'), :confirm => t('views.buttun_shipped')+t('views.confirm_msg') %>
     </div>
     <% if current_user.yesOffice? %>
       <%= link_to t('views.link_back'), engineorders_path %>

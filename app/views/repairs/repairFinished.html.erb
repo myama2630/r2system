@@ -18,10 +18,14 @@
     <%= f.label :after_comment %><br>
     <%= f.text_area :after_comment %>
   </div>
-
+  <div class="field">
+    <%= f.label :checkpaper %><br>    
+    <%= f.file_field :checkpaper %> 
+  </div>
+  <br>
   <br>
   <div class="actions">
-    <%= f.submit  :value => t('views.buttun_repairFinished') %>
+    <%= f.submit :value => t('views.buttun_repairFinished'), :confirm => t('views.buttun_repairFinished')+t('views.confirm_msg') %>
   </div>
   <br>
   <%= link_to t('views.link_back'), repairs_path %>
@@ -55,6 +59,16 @@
     <%= f.label :desirable_finish_date %><br>
     <%= f.date_select :desirable_finish_date, :use_month_numbers => true, :disabled=>disabled_data[:desirable_finish_date] %>
   </div>
+
+  <div class="field">
+    <%= label_tag '整備依頼書' %><br>
+    <% if @repair.requestpaper.present? %>
+      <%= link_to "ダウンロード", requestpaper_path, class: "btn btn-xs btn-default" %>
+    <% else %>
+      ファイルなし
+    <% end %>
+  </div>
+
   <div class="field">
     <%= f.label :start_date %><br>
     <%= f.date_select :start_date, :use_month_numbers => true, :disabled=>disabled_data[:start_date] %>

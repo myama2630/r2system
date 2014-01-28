@@ -15,3 +15,5 @@ ja:
     link_back: 戻る
     link_edit: 修正
     link_show: 詳細
+    confirm_msg: 'してよろしいですか？'
+    confirm_msg_cmn: 'よろしいですか？'

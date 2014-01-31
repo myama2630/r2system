@@ -1,26 +1,25 @@
-Ｒ２システムからのお知らせ
-
-お世話になっております。ヤンマーエネルギーシステムでございます。
-
-下記エンジンの整備をお願いいたします。
-
-　発注番号      <%= @repair.order_no %>
-　発注日        <%= @repair.order_date %>
-　発行番号      <%= @repair.issue_no %>
-
-　エンジン型式  <%= @repair.engine.engine_model_name %>
-　エンジンS/#   <%= @repair.engine.serialno %>
-　到着日        <%= @repair.arrive_date %>
-
-　希望納期      <%= @repair.desirable_finish_date %>
-
-以上、よろしくお願いします。
+<% companyinfo = Company.find(@user.company_id) %>
+<%= Company.find(Engine.find(@repair.engine_id).company_id).name %> 御中
+ 
+毎度お世話になり誠にありがとうございます。
+<%= companyinfo.name %> <%= @user.name %> です。
+ 
+エンジン整備依頼を発行致しましたのでご連絡致します。
+ 
+　※依頼No. <%= @repair.order_no %>
+　※エンジン型式 ： <%= @repair.engine.engine_model_name %>
+　※エンジンNo. ： <%= @repair.engine.serialno %>
+　※完成希望日 ： <%= @repair.desirable_finish_date %>
+ 
+　※ Ｒ２システムリンク ： http://r2system.herokuapp.com/repairs
+ 
+ご確認の上、ご対応頂けます様お願い致します。
 
 --------------------------------
-ヤンマーエネルギーシステム（株）
+<%= companyinfo.name %>
+<%= @user.name %>
 
-〒531-0076　
-大阪市北区大淀中５丁目１２－３９
-TEL 06-6451-7838 
-FAX 06-6451-1039
+〒<%= companyinfo.postcode%>
+<%= companyinfo.address %>
+TEL <%= companyinfo.phone_no %>
 --------------------------------

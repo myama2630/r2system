@@ -4,24 +4,23 @@
 
   <%= render "errormsg" , modeldata: @repair %>
 
-
 <div class="row">
 <div class="col-md-5">
   <%= render 'engineInfo' %>
   <% disabled_data = getDisabled_EngineArrived %>
 
 <br>
+  <%= f.hidden_field :engine_id %>
   <div class="field">
     <%= f.label :arrive_date %><br>
     <%= f.date_select :arrive_date, :use_month_numbers => true %>
   </div>
-  <div>
-    <%= f.hidden_field :engine_id %>
-  </div>  
+  <br>
   <div class="actions">
-    <%= f.submit  :value => t('views.buttun_arrived') %>
+    <%= f.submit :value => t('views.buttun_arrived'), :confirm => t('views.buttun_arrived')+t('views.confirm_msg') %>
   </div>
-<%= link_to t('views.link_back'), repairs_path %>
+  <br>
+  <%= link_to t('views.link_back'), engines_path %>
 
 </div>
 <div class="well col-md-5">

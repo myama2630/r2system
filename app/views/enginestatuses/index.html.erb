@@ -14,9 +14,9 @@
     <% @enginestatuses.each do |enginestatus| %>
       <tr>
         <td><%= enginestatus.name %></td>
-        <td><%= link_to 'Show', enginestatus %></td>
-        <td><%= link_to 'Edit', edit_enginestatus_path(enginestatus) %></td>
-        <td><%= link_to 'Destroy', enginestatus, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to '詳細', enginestatus , class: "workregist_show" %></td>
+        <td><%= link_to '編集', edit_enginestatus_path(enginestatus) , class: "workregist_edit" %></td>
+        <td><%= link_to '削除', enginestatus, method: :delete, data: { confirm: 'Are you sure?' } , class: "workregist_del" %></td>
       </tr>
     <% end %>
   </tbody>
@@ -25,3 +25,6 @@
 <br>
 
 <%= link_to 'New Enginestatus', new_enginestatus_path %>
+<br>
+<br>
+<%= link_to t('views.link_back'), root_path %>

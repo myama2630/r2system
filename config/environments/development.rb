@@ -47,13 +47,14 @@ R2::Application.configure do
   #  :password  => 'ppppppp'
   #}
 
-  # ローカルテスト用（オージス社内メール環境）の定義
+  # ローカルテスト用の定義
   config.action_mailer.smtp_settings = {
-    :address => 'smtp.ogis-ri.co.jp',
-    :port => 25,
+    :address => 'smtp.gmail.com',
+    :port => 587,
+    :domain => 'localhost',
     :authentication => :login,
-    :user_name => 'p9999999',
-    :password => 'pppppppp',
-  }
+    :user_name => ENV['MAIL_USER'],
+    :password  => ENV['MAIL_PASSWORD']
+    }
   
 end

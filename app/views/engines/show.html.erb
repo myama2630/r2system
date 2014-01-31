@@ -26,7 +26,7 @@
     <%= @engine.status.name %>
   </div>
 
-
+<br><br>
 <% if current_user.yesOffice? %>
   <%= link_to t('views.link_edit'), edit_engine_path(@engine) %> |
 <% end %>

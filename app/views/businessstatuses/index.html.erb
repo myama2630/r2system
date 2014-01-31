@@ -14,9 +14,9 @@
     <% @businessstatuses.each do |businessstatus| %>
       <tr>
         <td><%= businessstatus.name %></td>
-        <td><%= link_to 'Show', businessstatus %></td>
-        <td><%= link_to 'Edit', edit_businessstatus_path(businessstatus) %></td>
-        <td><%= link_to 'Destroy', businessstatus, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to '詳細', businessstatus, class: "workregist_show" %></td>
+        <td><%= link_to '編集', edit_businessstatus_path(businessstatus), class: "workregist_edit" %></td>
+        <td><%= link_to '削除', businessstatus, method: :delete, data: { confirm: 'Are you sure?' } , class: "workregist_del"%></td>
       </tr>
     <% end %>
   </tbody>
@@ -25,3 +25,6 @@
 <br>
 
 <%= link_to 'New Businessstatus', new_businessstatus_path %>
+<br>
+<br>
+<%= link_to t('views.link_back'), root_path %>

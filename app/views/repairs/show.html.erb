@@ -1,60 +1,79 @@
- <div class="field">
+<div class="field">
   <%= Engine.human_attribute_name('engine_model_name') %>：
     <%= @repair.engine.engine_model_name %>
-  </div>
+</div>
 
  <div class="field">
-    <%= Engine.human_attribute_name('serialno') %>
+    <%= Engine.human_attribute_name('serialno') %>：
     <%= @repair.engine.serialno %>
 </div>
 
-
   <div class="field">
-    <%= Repair.human_attribute_name('order_no') %>
-    <%= @repair.order_no %>
-  </div>
-  <div class="field">
-    <%= Repair.human_attribute_name('order_date') %>
-    <%= @repair.order_date %>
-  </div>
-
-  <div class="field">
-    <%= Repair.human_attribute_name('arrive_date') %>
+    <%= Repair.human_attribute_name('arrive_date') %>：
     <%=  @repair.arrive_date %>
   </div>
 
-
   <div class="field">
-    <%= Repair.human_attribute_name('construction_no') %>
-    <%= @repair.construction_no %>
+    <%= Repair.human_attribute_name('order_no') %>：
+    <%= @repair.order_no %>
   </div>
   <div class="field">
-    <%= Repair.human_attribute_name('desirable_finish_date') %>
+    <%= Repair.human_attribute_name('order_date') %>：
+    <%= @repair.order_date %>
+  </div>
+  <div class="field">
+    整備依頼書：
+    <% if @repair.requestpaper.present? %>
+      <%= link_to "ダウンロード", requestpaper_path, class: "btn btn-xs btn-default" %>
+    <% else %>
+      ファイルなし<br>
+    <% end %>
+  </div>
+
+  <div class="field">
+    <%= Repair.human_attribute_name('desirable_finish_date') %>：
     <%= @repair.desirable_finish_date %>
   </div>
   <div class="field">
-    <%= Repair.human_attribute_name('start_date') %>
+    <%= Repair.human_attribute_name('construction_no') %>：
+    <%= @repair.construction_no %>
+  </div>
+  <div class="field">
+    <%= Repair.human_attribute_name('start_date') %>：
     <%= @repair.start_date %>
   </div>
   <div class="field">
-    <%= Repair.human_attribute_name('estimated_finish_date') %>
+    <%= Repair.human_attribute_name('estimated_finish_date') %>：
     <%= @repair.estimated_finish_date %>
   </div>
   <div class="field">
-    <%= Repair.human_attribute_name('before_comment') %>
+    <%= Repair.human_attribute_name('before_comment') %>：
     <%= @repair.before_comment %>
   </div>
   <div class="field">
-    <%= Repair.human_attribute_name('finish_date') %>
+    <%= Repair.human_attribute_name('finish_date') %>：
     <%= @repair.finish_date %>
   </div>
   <div class="field">
-    <%= Repair.human_attribute_name('after_comment') %>
+    <%= Repair.human_attribute_name('after_comment') %>：
     <%= @repair.after_comment %>
   </div>
 
+  <div class="field">
+    組立チェックシート：
+    <% if @repair.requestpaper.present? %>
+      <%= link_to "ダウンロード", checkpaper_path, class: "btn btn-xs btn-default" %>
+    <% else %>
+      ファイルなし<br>
+    <% end %>
+  </div>
+
+<br><br>
 <% if current_user.yesOffice? %>
   <%= link_to t('views.link_edit'), edit_repair_path(@repair) %> |
 <% end %>
-
-<%= link_to t('views.link_back'), repairs_path %>
+<% if notice == t("controller_msg.repair_created") %>
+  <%= link_to t('views.link_back'), engines_path %>
+<% else %>
+  <%= link_to t('views.link_back'), repairs_path %>
+<% end %> 

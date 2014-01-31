@@ -1,20 +1,20 @@
 class CreateInitialSchema < ActiveRecord::Migration
   def change
-    drop_table :businessstatuses
+    #drop_table :businessstatuses
 
-    drop_table :companies
+    #drop_table :companies
 
-    drop_table :enginemodels
+    #drop_table :enginemodels
 
-    drop_table :engineorders
+    #drop_table :engineorders
 
-    drop_table :engines
+    #drop_table :engines
 
-    drop_table :enginestatuses
+    #drop_table :enginestatuses
 
-    drop_table :repairs
+    #drop_table :repairs
 
-    drop_table :users
+    #drop_table :users
     
     create_table :businessstatuses do |t|
       t.string   :name
@@ -102,6 +102,8 @@ class CreateInitialSchema < ActiveRecord::Migration
       t.date     :estimated_finish_date
       t.integer  :engine_id
       t.date     :shipped_date
+      t.string   :requestpaper
+      t.string   :checkpaper
       t.timestamps
     end
 
@@ -119,7 +121,7 @@ class CreateInitialSchema < ActiveRecord::Migration
       t.string   :userid
       t.string   :name
       t.string   :category
-      t.string   :company_id
+      t.integer  :company_id
       t.timestamps
     end
 

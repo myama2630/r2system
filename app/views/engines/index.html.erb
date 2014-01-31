@@ -42,13 +42,18 @@
       <th>返却日</th>
       <th>受領日</th>
       <th>サスペンド</th>
+      <% if current_user.yesOffice? %> <!-- YES本社の人の作業数だけ列を繋げる -->
+        <th class="workregist" colspan=5>作業登録</th>
+      <% elsif current_user.tender? %> <!-- 整備会社の作業数だけ列を繋げる -->
+        <th class="workregist" colspan=1>作業登録</th>
+      <% end %>                        <!-- YES拠点の人は作業なし -->
     </tr>
   </thead>
 
   <tbody>
     <% @engines.each do |engine| %>
       <tr>
-        <td><%= engine.status.name %></td>
+        <td class="status_col"><%= engine.status.name %></td>
         <td><%= engine.engine_model_name	 %></td>
         <td><%= engine.serialno %></td>
         <% if current_user.yesOffice? %>
@@ -58,21 +63,23 @@
         <td><%= engine.current_repair.arrive_date unless engine.current_repair.nil? %></td>
         <td><%= display_suspended_or_not(engine) %></td>
 
-       <% unless current_user.tender? %>
-        <td>
-          <%= link_to '引合登録', new_inquiry_path(engine) %>
-        </td>
+
+        <% unless current_user.tender? %>
+          <td class="workregist"><%= link_to '引合', new_inquiry_path(engine), class: "workregist_work" %> </td>
+        <% end %>
+
+        <td class="workregist-wide">
+          <% if engine.before_arrive? %>
+            <%= link_to '受領', engine_arrived_path(engine), class: "workregist_work" %>
+          <% else %>
+            受領済
           <% end %>
-        <td><%= link_to '受領登録', engine_arrived_path(engine) %></td>
-          <% if  engine.before_shipping?  %>
-           <td>
-            <%= link_to '出荷', shipped_path(engine.current_order_as_new) %>
-           </td>
-            <% end %>
-      　　<% if current_user.yesOffice? %>
-        　　<td><%= link_to '詳細', engine %></td>
-        　　<td><%= link_to '修正', edit_engine_path(engine) %></td>
-        　　<td><%= link_to '削除', engine, method: :delete, data: { confirm: '本当に削除してもよろしいですか？' } %></td>
+        </td>
+        <% if current_user.yesOffice? %>
+          <td class="workregist"><%= link_to '詳細', engine , class: "workregist_show" %></td>
+          <td class="workregist"><%= link_to '修正', edit_engine_path(engine) , class: "workregist_edit" %></td>
+          <td class="workregist"><%= link_to '削除', engine, method: :delete, data: { confirm: '本当に削除してもよろしいですか？' } , class: "workregist_del" %>
+          </td>
      　　 <% end %>  
       　　</tr>
     <% end %>
@@ -82,16 +89,18 @@
 <br>
 <%= will_paginate @engines, :previous_label=>'≪前', :next_label=>'次≫' %>
 <br>
+<br>
+<%= link_to '新規登録', new_engine_path %>
+<br>
+<br>
+<%= link_to t('views.link_back'), root_path %>
 
 <% if current_user.yesOffice? %>
   <hr>
     <%= form_tag import_engines_path, multipart: true do %>
-      <%= file_field_tag :file %>
-      <br>
+      <h5>【ファイルインポート】</h5>
+      <%= file_field_tag :file %><br>
       <%= submit_tag "インポート" %>
     <% end %>
   <br>
 <% end %>
-
-
-<%= link_to '新規登録', new_engine_path %>

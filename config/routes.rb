@@ -10,6 +10,12 @@ R2::Application.routes.draw do
 
   get 'repairs/repairFinished/:id' => 'repairs#repairFinished'
 
+  get 'repairs/download_requestpaper/:id' => 'repairs#download_requestpaper' , :as => :requestpaper
+
+  get 'repairs/download_checkpaper/:id' => 'repairs#download_checkpaper', :as => :checkpaper
+
+  get 'repairs/index' => 'repairs#index'
+
   get 'engines/index' => 'engines#index'
 
   get 'engineorders/engineInquiry' => 'engineorders#inquiry'
@@ -38,7 +44,7 @@ R2::Application.routes.draw do
 
   devise_for :users
   
-  resources :enginemodels
+  #resources :enginemodels
 
   resources :engines do
     get :autocomplete_engine_engine_model_name, :on => :collection

@@ -139,42 +139,38 @@ class Engine < ActiveRecord::Base
   def before_arrive?
     # エンジン状態マスタの id を直接使うのではなく、エンジン状態オブジェクトで
     # 比較するようにしました。
-    status == Enginestatus.of_before_arrive
+    status.id == Enginestatus.of_before_arrive.id
   end
 
   # 整備前状態かどうか？
   def before_repair?
-    status == Enginestatus.of_before_repair
+    status.id == Enginestatus.of_before_repair.id
   end
 
   # 整備中状態かどうか？
   def under_repair?
-    status == Enginestatus.of_under_repair
+    self.status.id == Enginestatus.of_under_repair.id
+
   end
 
   # 整備完了(完成品)状態かどうか？
   def finished_repair?
-    status == Enginestatus.of_finished_repair
+    status.id == Enginestatus.of_finished_repair.id
   end
 
   # 出荷準備中状態かどうか？
   def before_shipping?
-    #status == Enginestatus.of_before_shipping
-    if status == Enginestatus.of_before_shipping
-      return true
-    else
-      return false
-    end
+    status.id == Enginestatus.of_before_shipping.id
   end
 
   # 出荷済状態かどうか？
   def after_shipped?
-    status == Enginestatus.of_after_shipped
+    status.id == Enginestatus.of_after_shipping.id
   end
 
   # 廃却状態かどうか？
   def abolished?
-    status == Enginestatus.of_abolished
+    status.id == Enginestatus.of_abolished.id
   end
 
 #エンジンのCSVをインポートする

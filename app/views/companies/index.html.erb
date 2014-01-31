@@ -9,7 +9,7 @@
       <th>住所</th>
       <th>電話番号</th>
       <th>宛先</th>
-      <th></th>
+      <th>更新日</th>
       <th></th>
       <th></th>
     </tr>
@@ -24,21 +24,25 @@
         <td><%= company.address %></td>
         <td><%= company.phone_no %></td>
         <td><%= company.destination_name %></td>
-        <td><%= link_to 'Show', company %></td>
-        <td><%= link_to 'Edit', edit_company_path(company) %></td>
-        <td><%= link_to 'Destroy', company, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= company.updated_at %></td>        
+        <td><%= link_to '詳細', company, class: "workregist_show"  %></td>
+        <td><%= link_to '修正', edit_company_path(company) , class: "workregist_edit" %></td>
+        <td><%= link_to '削除', company, method: :delete, data: { confirm: '本当に削除してもよろしいですか？'}, class: "workregist_del"  %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
+<br>
+<br>
+<%= link_to '新規登録', new_company_path %>
+<br>
+<br>
+<%= link_to t('views.link_back'), root_path %>
+
 <hr>
 <%= form_tag import_companies_path, multipart: true do %>
-  <%= file_field_tag :file %>
+ <h5>【ファイルインポート】</h5>
+  <%= file_field_tag :file %><br>
   <%= submit_tag "インポート" %>
 <% end %>
-
-
-<br><br>
-
-<%= link_to '新規登録', new_company_path %>

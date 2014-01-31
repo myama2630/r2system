@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
   validates :userid, :presence => true,
                      :uniqueness => true,
                      :length => { :is => 8 },
-                     :format => { :with => /[A-Za-z][A-Za-z][0-9][0-9][0-9][0-9][0-9][0-9]/}
+                     :format => { :with => /\A[0-9A-Za-z]*\Z/}
   
   validates :name, :presence => true
 

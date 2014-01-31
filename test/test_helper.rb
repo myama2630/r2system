@@ -46,6 +46,7 @@ class AcceptanceTest < ActionDispatch::IntegrationTest
 
     Capybara.default_wait_time = 60
     DatabaseCleaner.strategy = :transaction
+    page.driver.browser.manage.window.maximize
   end
 
   teardown do
@@ -72,7 +73,7 @@ class AcceptanceTest < ActionDispatch::IntegrationTest
   end
 
   def sign_out
-    click_link "サインアウト"
+    click_link "ログアウト"
     assert_equal new_user_session_path, current_path
   end
 

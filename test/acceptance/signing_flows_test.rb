@@ -12,13 +12,13 @@ class SigningFlowsTest < AcceptanceTest
     click_link "サインアップ"
 
     assert_difference "User.count" do
-      fill_in "user_userid", with: "YA900001"
-      fill_in "user_name", with: "てすと花子"
-      fill_in "user_email", with: "YA900001@test.org"
-      fill_in "user_password", with: "passpass"
-      fill_in "user_password_confirmation", with: "passpass"
+      fill_in "ログインＩＤ", with: "YA900001"
+      fill_in "氏名", with: "てすと花子"
+      fill_in "Ｅメール", with: "YA900001@test.org"
+      fill_in "パスワード", with: "passpass"
+      fill_in "パスワード（確認）", with: "passpass"
       select "法華倶楽部", from: "user_company_id"
-      click_button "Sign up"
+      click_button "サインアップ"
       assert_equal root_path, current_path
     end
 
@@ -37,13 +37,13 @@ class SigningFlowsTest < AcceptanceTest
     click_link "サインアップ"
 
     assert_no_difference "User.count" do
-      fill_in "user_userid", with: "" # A userid must not be empty
-      fill_in "user_name", with: "てすと花子"
-      fill_in "user_email", with: "YA900001@test.org"
-      fill_in "user_password", with: "passpass"
-      fill_in "user_password_confirmation", with: "passpass"
+      fill_in "ログインＩＤ", with: "" # A userid must not be empty
+      fill_in "氏名", with: "てすと花子"
+      fill_in "Ｅメール", with: "YA900001@test.org"
+      fill_in "パスワード", with: "passpass"
+      fill_in "パスワード（確認）", with: "passpass"
       select "法華倶楽部", from: "user_company_id"
-      click_button "Sign up"
+      click_button "サインアップ"
       assert_equal user_registration_path, current_path
     end
   end
@@ -55,13 +55,13 @@ class SigningFlowsTest < AcceptanceTest
     click_link "サインアップ"
 
     assert_no_difference "User.count" do
-      fill_in "user_userid", with: "YA000001" # A userid must be unique
-      fill_in "user_name", with: "てすと花子"
-      fill_in "user_email", with: "YA900001@test.org"
-      fill_in "user_password", with: "passpass"
-      fill_in "user_password_confirmation", with: "passpass"
+      fill_in "ログインＩＤ", with: "YA000001" # A userid must be unique
+      fill_in "氏名", with: "てすと花子"
+      fill_in "Ｅメール", with: "YA900001@test.org"
+      fill_in "パスワード", with: "passpass"
+      fill_in "パスワード（確認）", with: "passpass"
       select "法華倶楽部", from: "user_company_id"
-      click_button "Sign up"
+      click_button "サインアップ"
       assert_equal user_registration_path, current_path
     end
   end
@@ -74,13 +74,13 @@ class SigningFlowsTest < AcceptanceTest
 
     assert_no_difference "User.count" do
       # A userid must match with /[a-z]{2}[0-9]{6}/i
-      fill_in "user_userid", with: "900001"
-      fill_in "user_name", with: "てすと花子"
-      fill_in "user_email", with: "YA900001@test.org"
-      fill_in "user_password", with: "passpass"
-      fill_in "user_password_confirmation", with: "passpass"
+      fill_in "ログインＩＤ", with: "900001"
+      fill_in "氏名", with: "てすと花子"
+      fill_in "Ｅメール", with: "YA900001@test.org"
+      fill_in "パスワード", with: "passpass"
+      fill_in "パスワード（確認）", with: "passpass"
       select "法華倶楽部", from: "user_company_id"
-      click_button "Sign up"
+      click_button "サインアップ"
       assert_equal user_registration_path, current_path
     end
   end
@@ -92,13 +92,33 @@ class SigningFlowsTest < AcceptanceTest
     click_link "サインアップ"
 
     assert_no_difference "User.count" do
-      fill_in "user_userid", with: "YA900001"
-      fill_in "user_name", with: "" # A name must not be empty
-      fill_in "user_email", with: "YA900001@test.org"
-      fill_in "user_password", with: "passpass"
-      fill_in "user_password_confirmation", with: "passpass"
+      fill_in "ログインＩＤ", with: "YA900001"
+      fill_in "氏名", with: "" # A name must not be empty
+      fill_in "Ｅメール", with: "YA900001@test.org"
+      fill_in "パスワード", with: "passpass"
+      fill_in "パスワード（確認）", with: "passpass"
       select "法華倶楽部", from: "user_company_id"
-      click_button "Sign up"
+      click_button "サインアップ"
+      assert_equal user_registration_path, current_path
+    end
+  end
+
+
+
+  # [異常系] 正しくないログインＩＤ（日本語）でサインアップしようとする
+  # users テーブルに変化が無いことを確認
+  test "try to sign up wrong loginID" do
+    visit_root
+    click_link "サインアップ"
+
+    assert_no_difference "User.count" do
+      fill_in "ログインＩＤ", with: "てすと花子"
+      fill_in "氏名", with: "てすと花子" 
+      fill_in "Ｅメール", with: "YA900001@test.org"
+      fill_in "パスワード", with: "passpass"
+      fill_in "パスワード（確認）", with: "passpass"
+      select "法華倶楽部", from: "user_company_id"
+      click_button "サインアップ"
       assert_equal user_registration_path, current_path
     end
   end
@@ -109,11 +129,10 @@ class SigningFlowsTest < AcceptanceTest
   test "sign in as existing user and then sign out" do
     visit_root
 
-    fill_in "user_userid", with: users(:test_tarou).userid
-    fill_in "user_password", with: "test0001"
+    fill_in "ログインＩＤ", with: users(:test_tarou).userid
+    fill_in "パスワード", with: "test0001"
     click_button "ログイン"
     assert_equal root_path, current_path
-
     sign_out
   end
 
@@ -122,8 +141,8 @@ class SigningFlowsTest < AcceptanceTest
   test "try to sign in with unknown userid" do
     visit_root
 
-    fill_in "user_userid", with: "YA999999"
-    fill_in "user_password", with: "passpass"
+    fill_in "ログインＩＤ", with: "YA999999"
+    fill_in "パスワード", with: "passpass"
     click_button "ログイン"
     assert_equal new_user_session_path, current_path
   end

@@ -77,7 +77,7 @@ class EnginesController < ApplicationController
     # order 指定を paginate の引数で指定すると、実行時に will_paginate 内で
     # deprecated 警告が出たので、外に出しました。
 #    @engines = Engine.where(cond.reduce(&:and)).order(:id).paginate(page: params[:page], per_page: 10)
-    @engines = Engine.where(cond.reduce(&:and)).order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+    @engines = Engine.where(cond.reduce(&:and)).order(:enginestatus_id,:engine_model_name,:serialno).paginate(page: params[:page], per_page: 10)
 
   end
 

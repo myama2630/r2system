@@ -63,7 +63,7 @@
   <div class="field">
     <%= label_tag '整備依頼書' %><br>
     <% if @repair.requestpaper.present? %>
-      <%= link_to "ダウンロード", requestpaper_path, class: "btn btn-xs btn-default" %>
+      <%= link_to "ダウンロード", @repair.requestpaper_url(:display), :target=>'_blank', class: "btn btn-xs btn-default" %>
     <% else %>
       ファイルなし
     <% end %>

@@ -6,8 +6,10 @@ class RequestpaperUploader < CarrierWave::Uploader::Base
   # include CarrierWave::RMagick
   # include CarrierWave::MiniMagick
 
+  include Cloudinary::CarrierWave
+
   # Choose what kind of storage to use for this uploader:
-  storage :file
+  #storage :file
   # storage :fog
 
   # Override the directory where uploaded files will be stored.
@@ -47,5 +49,16 @@ class RequestpaperUploader < CarrierWave::Uploader::Base
   # def filename
   #   "something.jpg" if original_filename
   # end
+
+  version :display do
+    process :eager => true
+    process :resize_to_fill => [200, 200, :north]
+  end
+
+  version :thumbnail do
+    process :eager => true
+    process :resize_to_fit => [50, 50]
+  end
+
 
 end

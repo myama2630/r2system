@@ -48,5 +48,12 @@ class User < ActiveRecord::Base
     end
     return emails
   end
-  
+
+  #整備会社に所属するユーザーを取得する
+  def self.tender_user_list
+   company_list = Company.where(:category => "整備会社").pluck(:id)
+   user_list = self.where(company_id: company_list)
+   return user_list
+  end
+
 end

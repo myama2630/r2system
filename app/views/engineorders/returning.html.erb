@@ -5,8 +5,10 @@
 <%= form_for(@engineorder) do |f| %>
 
   <%= render "errormsg" , modeldata: @engineorder %>
-  
-  <div class="field">
+
+  <div class="row">
+    <div class="col-sm-5">
+      <div class="field">
     <%= f.label :registered_user_id %>：
     <% if @engineorder.registered_user_id.nil? %>
       <% @engineorder.registered_user_id = current_user.id  %>
@@ -36,7 +38,7 @@
 
   <div class="field">
     <%= f.label :returning_date %><br>
-    <%= f.date_select :returning_date %>
+    <%= f.date_select :returning_date , :use_month_numbers => true %>
   </div>
 
   <div class="field">
@@ -48,17 +50,19 @@
     <%= f.submit :value => t('views.buttun_returning'), :confirm => t('views.buttun_returning')+t('views.confirm_msg') %>
   </div>
 
-  <%= link_to 'Back', engineorders_path %>
+  <%= link_to t('views.link_back'), engineorders_path %>
+</div>
 
-<hr>
+<div class="well col-sm-7">
+
   <div class="field">
     <%= f.label :inquiry_date %><br>
-    <%= f.date_select :inquiry_date %>
+    <%= f.date_select :inquiry_date , :use_month_numbers => true %>
   </div>
 
   <div class="field">
     <%= f.label :order_date %><br>
-    <%= f.date_select :order_date %>
+    <%= f.date_select :order_date , :use_month_numbers => true %>
   </div>
 
   <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch } %>
@@ -93,7 +97,7 @@
   </div>
   <div class="field">
     <%= f.label :day_of_test %><br>
-    <%= f.date_select :day_of_test %>
+    <%= f.date_select :day_of_test , :use_month_numbers => true %>
   </div>
   <div class="field">
     <%= f.label :change_comment %><br>
@@ -102,7 +106,7 @@
 
   <div class="field">
     <%= f.label :desirable_delivery_date %><br>
-    <%= f.date_select :desirable_delivery_date %>
+    <%= f.date_select :desirable_delivery_date , :use_month_numbers => true %>
   </div>
   
   
@@ -130,12 +134,13 @@
   
   <div class="field">
     <%= f.label :shipped_date %><br>
-    <%= f.date_select :shipped_date %>
+    <%= f.date_select :shipped_date , :use_month_numbers => true %>
   </div>
 
   <div class="field">
     <%= f.label :shipped_comment %><br>
     <%= f.text_area :shipped_comment %>
   </div>
+</div>
 
 <% end %>

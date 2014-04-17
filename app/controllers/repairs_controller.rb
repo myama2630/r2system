@@ -53,7 +53,7 @@ class RepairsController < ApplicationController
     end
     
     #対象のエンジン情報を取得して、そのエンジンに紐付く整備情報を取得する
-    @repairs = Repair.includes(:engine).where(cond.reduce(&:and)).order(Engine.arel_table[:enginestatus_id]).order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+     @repairs = Repair.includes(:engine).where(cond.reduce(&:and)).order(Engine.arel_table[:enginestatus_id],Engine.arel_table[:engine_model_name],Engine.arel_table[:serialno]).paginate(page: params[:page], per_page: 10)
 
   end
 
@@ -156,10 +156,12 @@ class RepairsController < ApplicationController
 		    #  end
 		    #end
 		    
-		    # もし整備依頼の場合は、その整備会社のユーザに整備依頼メールを送信する。
-
+        # もし整備依頼の場合は、その整備会社のユーザに整備依頼メールを送信する。
         if params[:commit] == t('views.buttun_repairOrdered')
-          R2mailer.sendRepairOrderMail(User.collect_emails_by_company(@repair.engine.company), @repair, current_user).deliver
+           #メールを送信するのは、本番環境(production)の場合のみ
+           if Rails.env.production?
+             R2mailer.sendRepairOrderMail(User.collect_emails_by_company(@repair.engine.company), @repair, current_user).deliver
+           end
         end
 
 		    @repair.engine.save

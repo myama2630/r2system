@@ -26,8 +26,8 @@
     <div><%= f.label :company %><br>
       <%= f.collection_select( :company_id, Company.all, :id, :name, :include_blank => false ) %>
     </div>
-    <br>
   <% end %>
+  <br><br>
   <div><%= f.label :current_password %> <i>(内容変更には、現在のパスワードの入力が必要です)</i><br />
   <%= f.password_field :current_password %></div>
     <br>

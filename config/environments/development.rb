@@ -32,12 +32,12 @@ R2::Application.configure do
   
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
 
-  # メール送信機能
+  # 繝｡繝ｼ繝ｫ騾∽ｿ｡讖溯�ｽ
   config.action_mailer.delivery_method = :smtp
 
   config.action_mailer.raise_delivery_errors = true
 
-  # gmail用の定義
+  # gmail逕ｨ縺ｮ螳夂ｾｩ
   #config.action_mailer.smtp_settings = {
   #  :address => 'smtp.gmail.com',
   #  :port => 587,
@@ -47,14 +47,15 @@ R2::Application.configure do
   #  :password  => 'ppppppp'
   #}
 
-  # ローカルテスト用の定義
+  # 繝ｭ繝ｼ繧ｫ繝ｫ繝�繧ｹ繝育畑縺ｮ螳夂ｾｩ
   config.action_mailer.smtp_settings = {
-    :address => 'smtp.gmail.com',
-    :port => 587,
+    :address => ENV['MAIL_ADDRESS'],
+    :port => 25,
     :domain => 'localhost',
     :authentication => :login,
     :user_name => ENV['MAIL_USER'],
     :password  => ENV['MAIL_PASSWORD']
     }
+  
   
 end

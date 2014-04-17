@@ -88,6 +88,11 @@ class AcceptanceTest < ActionDispatch::IntegrationTest
     find "#{tag}:nth-of-type(#{nth})"
   end
 
+  def confirm
+    page.driver.browser.switch_to.alert.accept
+    page.driver.browser.switch_to.default_content
+  end
+
   def save_and_invalidate_proxy_settings
     @lower_http_proxy  = ENV.delete("http_proxy")
     @upper_http_proxy  = ENV.delete("HTTP_PROXY")

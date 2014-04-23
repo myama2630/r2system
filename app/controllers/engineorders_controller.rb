@@ -81,6 +81,14 @@ class EngineordersController < ApplicationController
   # PATCH/PUT /engineorders/1
   # PATCH/PUT /engineorders/1.json
   def update
+    # すでに新エンジンが登録されていて、入力された新エンジンが現在の新エンジン
+    # と異なる場合、一旦引当の取消が必要と判断する
+    if new_engine = @engineorder.new_engine
+      unless new_engine.id == engineorder_params[:new_engine_id]
+        @engineorder.undo_allocation
+      end
+    end
+
     # 流通ステータスをセットする。(privateメソッド)
     setBusinessstatus
 

@@ -17,7 +17,7 @@
       <% if current_user.yesOffice? %>
         <th colspan=8 rowspan=2>作業登録</th> <!-- YES本社の人の作業数だけ列を繋げる -->
       <% elsif current_user.yesBranch? %>
-        <th colspan=8 rowspan=2>作業登録</th> <!-- YES	点の人の作業数だけ列を繋げる -->
+        <th colspan=7 rowspan=2>作業登録</th> <!-- YES拠点の人の作業数だけ列を繋げる -->
       <% end %>
 </tr>
 <tr>
@@ -43,14 +43,23 @@
         <td><%= engineorder.shipped_date %></td>
         <td><%= engineorder.returning_date %></td>
 
-        <td  rowspan="2"><%= link_to '引合', edit_inquery_path(engineorder) , class: "workregist_work" %></td>
-        <td  rowspan="2"><%= link_to '受注', ordered_path(engineorder), class: "workregist_work" %></td>
-        <td  rowspan="2"><%= link_to '引当', allocated_path(engineorder), class: "workregist_work" %></td>
-        <td  rowspan="2"><%= link_to '出荷', shipped_path(engineorder), class: "workregist_work" %></td>
-        <td  rowspan="2"><%= link_to '返却', returning_path(engineorder), class: "workregist_work" %></td>
-        <td  rowspan="2"><%= link_to '詳細', engineorder, class: "workregist_show"  %></td>
-        <td  rowspan="2"><%= link_to '修正', edit_engineorder_path(engineorder), class: "workregist_edit"  %></td>
-        <td  rowspan="2"><%= link_to '削除', engineorder, method: :delete, data: { confirm: '削除してもよろしいですか？' }, class: "workregist_del" %></td>
+        <td  rowspan="2" class="workregist" ><%= link_to t("views.link_inquiry"), edit_inquery_path(engineorder) , class: "workregist_work" %></td>
+        <td  rowspan="2" class="workregist" ><%= link_to t("views.link_ordered"), ordered_path(engineorder), class: "workregist_work" %></td>
+        <td  rowspan="2" class="workregist" ><%= link_to t("views.link_allocated"), allocated_path(engineorder), class: "workregist_work" %></td>
+        <td  rowspan="2" class="workregist" ><%= link_to t("views.link_shipped"), shipped_path(engineorder), class: "workregist_work" %></td>
+        <td  rowspan="2" class="workregist" ><%= link_to t("views.link_returning"), returning_path(engineorder), class: "workregist_work" %></td>
+        <td  rowspan="2" class="workregist" ><%= link_to t("views.link_show"), engineorder, class: "workregist_show"  %></td>
+        <% if current_user.yesOffice? %>
+          <td  rowspan="2" class="workregist" ><%= link_to t("views.link_edit"), edit_engineorder_path(engineorder), class: "workregist_edit"  %></td>
+          <td  rowspan="2" class="workregist"><%= link_to t("views.link_destroy"), engineorder, method: :delete, data: { confirm: '削除してもよろしいですか？' }, class: "workregist_del" %></td>
+        <% end %>
+        <% if current_user.yesBranch? %>
+          <td  rowspan="2" class="workregist">
+            <% if engineorder.inquiry? %>
+            <%= link_to '削除', engineorder, method: :delete, data: { confirm: '削除してもよろしいですか？' }, class: "workregist_del" %>
+            <% end %>
+          </td>
+        <% end %>
 </tr>
 <tr> 
         <td>

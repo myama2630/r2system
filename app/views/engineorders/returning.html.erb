@@ -5,8 +5,12 @@
 <%= form_for(@engineorder) do |f| %>
 
   <%= render "errormsg" , modeldata: @engineorder %>
-  
-  <div class="field">
+    <% disabled_data = getDisabled_Returning %>
+
+
+  <div class="row">
+    <div class="col-sm-5">
+      <div class="field">
     <%= f.label :registered_user_id %>：
     <% if @engineorder.registered_user_id.nil? %>
       <% @engineorder.registered_user_id = current_user.id  %>
@@ -32,11 +36,11 @@
     <%= f.text_field :invoice_no_old %>
   </div>
 
-  <%= render "location", {f: f, attr_name: "returning_place", location: @engineorder.returning_place } %>
+  <%= render "location", {f: f, attr_name: "returning_place", location: @engineorder.returning_place ,disabled_info: false} %>
 
   <div class="field">
     <%= f.label :returning_date %><br>
-    <%= f.date_select :returning_date %>
+    <%= f.date_select :returning_date , :use_month_numbers => true, :start_year => 2005 %>
   </div>
 
   <div class="field">
@@ -44,98 +48,100 @@
     <%= f.text_area :returning_comment %>
   </div>
 
+<br>
   <div class="actions">
     <%= f.submit :value => t('views.buttun_returning'), :confirm => t('views.buttun_returning')+t('views.confirm_msg') %>
   </div>
 
-  <%= link_to 'Back', engineorders_path %>
+<br>
+  <%= link_to t('views.link_back'), anchor_path %>
+</div>
 
-<hr>
+<div class="well col-sm-7">
   <div class="field">
     <%= f.label :inquiry_date %><br>
-    <%= f.date_select :inquiry_date %>
+    <%= f.date_select :inquiry_date , :use_month_numbers => true ,  :disabled=> disabled_data[:inquiry_date], :start_year => 2005  %>
   </div>
 
   <div class="field">
     <%= f.label :order_date %><br>
-    <%= f.date_select :order_date %>
+    <%= f.date_select :order_date , :use_month_numbers => true, :disabled=> disabled_data[:order_date], :start_year => 2005  %>
   </div>
 
-  <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch } %>
+  <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch, disabled_info: disabled_data[:branch]   } %>
 
   <div class="field">
     <%= f.label :salesman_id %><br>
-   <%= f.collection_select( :salesman_id, User.all, :id, :name, :include_blank => false ) %>
+   <%= f.collection_select( :salesman_id, User.all, :id, :name, {}, {:include_blank => false, :disabled=> disabled_data[:salesman_id] } ) %>
   </div>
 
-  <%= render "location", {f: f, attr_name: "install_place", location: @engineorder.install_place } %>
+  <%= render "location", {f: f, attr_name: "install_place", location: @engineorder.install_place , disabled_info: disabled_data[:install_place]  } %>
 
   <div class="field">
     <%= f.label :orderer %><br>
-    <%= f.text_field :orderer %>
+    <%= f.text_field :orderer, :disabled=> disabled_data[:orderer]   %>
   </div>
 
-  <div class="field">
-    <%= f.label :old_engine_id %><br>
-    <%= f.collection_select( :old_engine_id, Engine.all, :id, :engine_name, :include_blank => true ) %>
-  </div>
+    <div class="field">
+      <%= f.label :old_engine_model_name %><br>
+      <%= text_field_tag 'engine_model_name', @engineorder.old_engine.engine_model_name, :disabled=>true %><br>
+      <%= f.label :old_serialno %><br>
+      <%= text_field_tag 'serialno', @engineorder.old_engine.serialno, :disabled=>true %><br>
+     </div>
 
 
-<!--
-  <div class="field">
-    <%= f.label :machine_no %><br>
-    <%= f.text_field :machine_no %>
-  </div>
--->
   <div class="field">
     <%= f.label :time_of_running %><br>
-    <%= f.number_field :time_of_running %>
+    <%= f.number_field :time_of_running, :disabled=> disabled_data[:time_of_running]   %>
   </div>
   <div class="field">
     <%= f.label :day_of_test %><br>
-    <%= f.date_select :day_of_test %>
+    <%= f.date_select :day_of_test , :use_month_numbers => true , :disabled=> disabled_data[:day_of_test], :start_year => 1990  %>
   </div>
   <div class="field">
     <%= f.label :change_comment %><br>
-    <%= f.text_area :change_comment %>
+    <%= f.text_area :change_comment , :disabled=> disabled_data[:change_comment]  %>
   </div>
 
   <div class="field">
     <%= f.label :desirable_delivery_date %><br>
-    <%= f.date_select :desirable_delivery_date %>
+    <%= f.date_select :desirable_delivery_date , :use_month_numbers => true , :disabled=> disabled_data[:desirable_delivery_date]  %>
   </div>
   
   
-  <%= render "location", {f: f, attr_name: "sending_place", location: @engineorder.sending_place } %>
+  <%= render "location", {f: f, attr_name: "sending_place", location: @engineorder.sending_place , disabled_info: disabled_data[:sending_place]  } %>
 
   <div class="field">
     <%= f.label :invoice_no_new %><br>
-    <%= f.text_field :invoice_no_new %>
+    <%= f.text_field :invoice_no_new , :disabled=> disabled_data[:invoice_no_new]  %>
   </div>
 
   <div class="field">
     <%= f.label :sending_comment %><br>
-    <%= f.text_area :sending_comment %>
+    <%= f.text_area :sending_comment , :disabled=> disabled_data[:sending_comment]  %>
   </div>
 
   <div class="field">
     <%= f.label :allocated_date %><br>
-    <%= f.date_select :allocated_date, :use_month_numbers => true %>
+    <%= f.date_select :allocated_date, :use_month_numbers => true , :disabled=> disabled_data[:allocated_date]  %>
   </div>
 
-  <div class="field">
-    <%= f.label :new_engine_id %><br>
-    <%= f.collection_select( :new_engine_id, Engine.all, :id, :engine_name, :include_blank => true ) %>
-  </div>
+    <div class="field">
+        <%= f.label :new_engine_model_name %><br>
+      <%= text_field_tag 'engine_model_name', @engineorder.new_engine.engine_model_name, :disabled=> true %><br>
+        <%= f.label :new_serialno %><br>
+      <%= text_field_tag 'serialno', @engineorder.new_engine.serialno, :disabled=> true %><br>
+    </div>
   
   <div class="field">
     <%= f.label :shipped_date %><br>
-    <%= f.date_select :shipped_date %>
+    <%= f.date_select :shipped_date , :use_month_numbers => true , :disabled=> disabled_data[:shipped_date]  %>
   </div>
 
   <div class="field">
     <%= f.label :shipped_comment %><br>
-    <%= f.text_area :shipped_comment %>
+    <%= f.text_area :shipped_comment, :disabled=> disabled_data[:shipped_comment]   %>
   </div>
+</div>
 
 <% end %>

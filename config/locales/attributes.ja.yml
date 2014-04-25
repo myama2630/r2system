@@ -81,3 +81,7 @@ ja:
         invoice_no_new: 送り状No（新エンジン）
         invoice_no_old: 送り状No（旧エンジン） 
         allocated_date: 引当日
+        new_engine_model_name: 新規エンジン型式
+        new_serialno: '新規エンジンS/#'
+        old_engine_model_name: 返却エンジン型式
+        old_serialno: '返却エンジンS/#'

@@ -214,3 +214,6 @@ ja:
     #Repair was successfully created.
     repair_updated: 整備情報を更新しました。
     #Repair was successfully updated.
+    engineorder_allocation_undoing?: 引当を取り消してもよろしいですか？
+    engineorder_allocation_undone: 引当を取り消しました
+    engineorder_allocation_not_undoable: 引当を取り消せません

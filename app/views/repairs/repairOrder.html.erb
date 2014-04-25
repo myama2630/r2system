@@ -14,7 +14,7 @@
   </div>
   <div class="field">
     <%= f.label :day_of_test %><br>
-    <%= f.date_select :day_of_test, :include_blank => true, :use_month_numbers => true, :start_year => Engine::EARLIEST_START_YEAR, :disabled => disabled_data[:day_of_test] %>
+    <%= f.date_select :day_of_test, :include_blank => true, :use_month_numbers => true, :start_year => Engine::EARLIEST_START_YEAR, :disabled => disabled_data[:day_of_test], :start_year => 1990 %>
   </div>
   
   <div class="field">
@@ -29,7 +29,7 @@
 
   <div class="field">
     <%= f.label :arrive_date %><br>
-    <%=  f.date_select :arrive_date, :use_month_numbers => true, :disabled=>disabled_data[:arrive_date] %>
+    <%=  f.date_select :arrive_date, :use_month_numbers => true, :disabled=>disabled_data[:arrive_date], :start_year => 2000 %>
   </div>
 
   <div class="field">
@@ -47,7 +47,7 @@
   </div>
   <div class="field">
     <%= f.label :desirable_finish_date %><br>
-    <%= f.date_select :desirable_finish_date, :use_month_numbers => true, :disabled=>disabled_data[:desirable_finish_date] %>
+    <%= f.date_select :desirable_finish_date, :use_month_numbers => true, :disabled=>disabled_data[:desirable_finish_date], :start_year => 2005 %>
   </div>
   <div class="field">
     <%= f.label :requestpaper %><br>    
@@ -60,7 +60,7 @@
     </div>
   <% end %>
 <br>
-<%= link_to t('views.link_back'), repairs_path %>
+<%= link_to t('views.link_back'), anchor_path %>
 
 <% end %>
 

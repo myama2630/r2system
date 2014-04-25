@@ -1,6 +1,9 @@
 class EnginesController < ApplicationController
   before_action :set_engine, only: [:show, :edit, :update, :destroy]
 
+  after_action :anchor!, only: [:index]
+  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update]
+
   autocomplete :engine, :engine_model_name, :full => true #, :extra_data => [:default_client_id, :default_client_name]
   
   # GET /engines
@@ -77,8 +80,8 @@ class EnginesController < ApplicationController
     # order 指定を paginate の引数で指定すると、実行時に will_paginate 内で
     # deprecated 警告が出たので、外に出しました。
 #    @engines = Engine.where(cond.reduce(&:and)).order(:id).paginate(page: params[:page], per_page: 10)
-    @engines = Engine.where(cond.reduce(&:and)).order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
-
+    @engines = Engine.where(cond.reduce(&:and)).order(:enginestatus_id,:engine_model_name,:serialno).paginate(page: params[:page], per_page: 10)
+    adjust_page(@engines)
   end
 
   # GET /engines/1
@@ -130,7 +133,7 @@ class EnginesController < ApplicationController
   def destroy
     @engine.destroy
     respond_to do |format|
-      format.html { redirect_to engines_url }
+      format.html { redirect_to anchor_path }
       format.json { head :no_content }
     end
   end

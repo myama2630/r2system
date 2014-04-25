@@ -51,23 +51,17 @@
 
   <div class="field">
     <%= f.label :inquiry_date %><br>
-    <%= f.date_select :inquiry_date %>
+    <%= f.date_select :inquiry_date, :start_year => 2005 %>
   </div>
 
-  <% #引合登録以外の場合は、order_dateを表示 %>
-  <div class="field">
-    <%= f.label :order_date %><br>
-    <%= f.date_select :order_date %>
-  </div>
-  
-  <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch } %>
+  <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch, disabled_info: false} %>
   
   <div class="field">
     <%= f.label :salesman_id %><br>
    <%= f.collection_select( :salesman_id, User.all, :id, :name, :include_blank => false ) %>
   </div>
 
-  <%= render "location", {f: f, attr_name: "install_place", location: @engineorder.install_place } %>
+  <%= render "location", {f: f, attr_name: "install_place", location: @engineorder.install_place , disabled_info: false} %>
   
   <div class="field">
     <%= f.label :orderer %><br>
@@ -97,7 +91,7 @@
   </div>
   <div class="field">
     <%= f.label :day_of_test %><br>
-    <%= f.date_select :day_of_test %>
+    <%= f.date_select :day_of_test, :start_year => 1990 %>
   </div>
 
   <div class="field">
@@ -114,7 +108,7 @@
 <% #引当登録以降の場合は、受注日を表示 %> 
   <div class="field">
     <%= f.label :order_date %><br>
-    <%= f.date_select :order_date %>
+    <%= f.date_select :order_date, :start_year => 2005 %>
   </div>
   
   <div class="field">
@@ -129,7 +123,7 @@
   </div>
   <div class="field">
     <%= f.label :desirable_delivery_date %><br>
-    <%= f.date_select :desirable_delivery_date %>
+    <%= f.date_select :desirable_delivery_date , :start_year => 2005 %>
   </div>
   
 <% #引当登録以降の場合は、返却コメントと出荷日を表示 %> 
@@ -139,7 +133,7 @@
   </div>
   <div class="field">
     <%= f.label :shipped_date %><br>
-    <%= f.date_select :shipped_date %>
+    <%= f.date_select :shipped_date , :start_year => 2005 %>
   </div>
   <div id="shipment location"></div>
 

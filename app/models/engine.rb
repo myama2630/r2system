@@ -1,5 +1,4 @@
 # coding: utf-8
-require 'engineorder'
 
 class Engine < ActiveRecord::Base
   # config/initializers/constants.rb で一元的に定義した定数モジュールを取り込ん

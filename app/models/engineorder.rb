@@ -27,6 +27,7 @@ class Engineorder < ActiveRecord::Base
   #旧エンジンは必ず流通登録に必要なので、必須項目とする。
   validates :old_engine_id, presence: true
 
+  accepts_nested_attributes_for :old_engine
   accepts_nested_attributes_for :new_engine
 
   # 新エンジンをセットする
@@ -38,15 +39,15 @@ class Engineorder < ActiveRecord::Base
   alias :_orig_new_engine= :new_engine=
   def new_engine=(engine)
     if engine
-      if new_engine && new_engine != engine
+      if self.new_engine && self.new_engine != engine
         # 新エンジンが指定済みの場合は、その新エンジンをサスペンド状態に変更する
-        new_engine.suspend!
-        new_engine.save
+        self.new_engine.suspend!
+        self.new_engine.save
       end
     else
       # エンジンオーダの新エンジンを nil に更新する (引当を取り消す) ので、
       # エンジンオーダが "出荷準備中" 状態の場合、"受注" 状態に戻す
-      if new_engine && self.shipping_preparation?
+      if self.new_engine && self.shipping_preparation?
         self.status = Businessstatus.of_ordered
       end
     end
@@ -56,59 +57,59 @@ class Engineorder < ActiveRecord::Base
   # 旧エンジンをセットする
   alias :_orig_old_engine= :old_engine=
   def old_engine=(engine)
-    if old_engine && old_engine != engine
+    if self.old_engine && self.old_engine != engine
       # 旧エンジンが指定済みの場合は、その旧エンジンをサスペンド状態に変更する
-      old_engine.suspend!
-      old_engine.save!
+      self.old_engine.suspend!
+      self.old_engine.save!
     end
-    _orig_old_engine = engine
+    self._orig_old_engine = engine
   end
 
   # ステータスの確認メソッド集 --------------- #
   # メソッド名を lower-camel-case -> snake-case に変更しています。
   # 新規引合かどうか？
   def new_inquiry?
-    status.nil?
+    self.status.nil?
   end 
 
   # 引合かどうか？
   def inquiry?
-    status == Businessstatus.of_inquiry
+    self.status == Businessstatus.of_inquiry
   end 
 
   # 受注かどうか？
   def ordered?
-    status == Businessstatus.of_ordered
+    self.status == Businessstatus.of_ordered
   end 
 
   # 出荷準備中かどうか？
   def shipping_preparation?
-    status == Businessstatus.of_shipping_preparation
+    self.status == Businessstatus.of_shipping_preparation
   end 
 
   # 出荷済かどうか？
   def shipped?
-    status == Businessstatus.of_shipped
+    self.status == Businessstatus.of_shipped
   end 
 
   # 返却済みかどうか？
   def returned?
-    status == Businessstatus.of_returned
+    self.status == Businessstatus.of_returned
   end 
 
   # キャンセルかどうか？
   def canceled?
-    status == Businessstatus.of_canceled
+    self.status == Businessstatus.of_canceled
   end 
 
   # 旧エンジンに対する整備オブジェクトを取り出す
   def repair_for_old_engine
-    return old_engine.current_repair
+    return self.old_engine.current_repair
   end
 
   # 新エンジンに対する整備オブジェクトを取り出す
   def repair_for_new_engine
-    return new_engine.current_repair
+    return self.new_engine.current_repair
   end
 
   #現時点での発行Noの生成 (年月-枝番3桁)

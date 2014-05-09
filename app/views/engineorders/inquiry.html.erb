@@ -83,8 +83,13 @@
 
 
   <div class="field">
-    <%= f.label :old_engine_id %><br>
-    <%= f.collection_select( :old_engine_id, Engine.all, :id, :engine_name, :include_blank => true ) %>
+    <label for="old_engine">返却エンジン</label>
+    <div id="old_engine">
+      <%= f.fields_for :old_engine do |engine_form| %>
+        <%= engine_form.collection_select :engine_model_name, Enginemodel.all, :modelcode, :name, include_blank: true %>
+        <%= engine_form.text_field :serialno, placeholder: "シリアルNo." %>
+      <% end %>
+    </div>
   </div>
 
 

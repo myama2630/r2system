@@ -66,14 +66,14 @@ class EngineordersController < ApplicationController
     # setOldEngine
 
     # 返却エンジンを新規登録する (すでに登録済みの場合は、そのエンジンを使う)
-    model_name = params[:engineorder][:old_engine_attributes][:engine_model_name]
-    serial_no = params[:engineorder][:old_engine_attributes][:serialno]
-    engine = Engine.find_by(engine_model_name: model_name, serialno: serial_no,
+    engine = Engine.find_by(engine_model_name: params[:old_engine_model_name],
+                            serialno: params[:old_engine_serialno],
                             status: Enginestatus.of_after_shipping)
     if engine
       @engineorder.old_engine = engine
     else
-      @engineorder.old_engine = Engine.create(engine_model_name: model_name, serialno: serial_no,
+      @engineorder.old_engine = Engine.create(engine_model_name: params[:old_engine_model_name],
+                                              serialno: params[:old_engine_serialno],
                                               company: current_user.company)
     end
 
@@ -156,7 +156,6 @@ class EngineordersController < ApplicationController
         end
       else
         @engineorder = Engineorder.new
-        @engineorder.old_engine = Engine.new
       end
         @engineorder.install_place = Place.new
     end
@@ -345,7 +344,7 @@ class EngineordersController < ApplicationController
       :branch_id, :salesman_id, :install_place, :install_place_id, :orderer, :machine_no,
       :time_of_running, :change_comment, :order_date, :sending_place_id,
       :sending_comment, :desirable_delivery_date, :businessstatus_id,
-      :new_engine_id, :old_engine, :new_engine,
+      :new_engine_id, :old_engine_id, :old_engine, :new_engine,
       :enginestatus_id,:invoice_no_new, :invoice_no_old, :day_of_test,
       :shipped_date, :shipped_comment, :returning_date, :returning_comment, :title,
       :returning_place_id, :allocated_date,:install_place_attributes => [:id,:install_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy])

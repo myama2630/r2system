@@ -32,7 +32,6 @@ class Engineorder < ActiveRecord::Base
   #旧エンジンは必ず流通登録に必要なので、必須項目とする。
   validates :old_engine_id, presence: true
 
-  accepts_nested_attributes_for :old_engine
   accepts_nested_attributes_for :new_engine
 
   # 新エンジンをセットする

@@ -66,15 +66,17 @@ class EngineordersController < ApplicationController
     # setOldEngine
 
     # 返却エンジンを新規登録する (すでに登録済みの場合は、そのエンジンを使う)
-    engine = Engine.find_by(engine_model_name: params[:old_engine_model_name],
-                            serialno: params[:old_engine_serialno],
+    engine = Engine.find_by(engine_model_name: @engineorder.old_engine.engine_model_name,
+                            serialno: @engineorder.old_engine.serialno,
                             status: Enginestatus.of_after_shipping)
     if engine
       @engineorder.old_engine = engine
+      @engineorder.old_engine.status = Enginestatus.of_about_to_return
     else
-      @engineorder.old_engine = Engine.create(engine_model_name: params[:old_engine_model_name],
-                                              serialno: params[:old_engine_serialno],
-                                              company: current_user.company)
+      @engineorder.old_engine = Engine.new(engine_model_name: @engineorder.old_engine.engine_model_name,
+                                           serialno: @engineorder.old_engine.serialno,
+                                           status: Enginestatus.of_about_to_return,
+                                           company: current_user.company)
     end
 
     #old_engine_idのvalidateチェックを実行させるため、
@@ -156,6 +158,7 @@ class EngineordersController < ApplicationController
         end
       else
         @engineorder = Engineorder.new
+        @engineorder.old_engine = Engine.new
       end
         @engineorder.install_place = Place.new
     end
@@ -347,6 +350,8 @@ class EngineordersController < ApplicationController
       :new_engine_id, :old_engine_id, :old_engine, :new_engine,
       :enginestatus_id,:invoice_no_new, :invoice_no_old, :day_of_test,
       :shipped_date, :shipped_comment, :returning_date, :returning_comment, :title,
-      :returning_place_id, :allocated_date,:install_place_attributes => [:id,:install_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy])
+      :returning_place_id, :allocated_date,:install_place_attributes => [:id,:install_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy],
+      :old_engine_attributes => [:engine_model_name, :serialno]
+    )
   end
 end

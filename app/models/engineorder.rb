@@ -30,8 +30,9 @@ class Engineorder < ActiveRecord::Base
 
 
   #旧エンジンは必ず流通登録に必要なので、必須項目とする。
-  validates :old_engine_id, presence: true
+  validates :old_engine, presence: true
 
+  accepts_nested_attributes_for :old_engine
   accepts_nested_attributes_for :new_engine
 
   # 新エンジンをセットする
@@ -58,15 +59,14 @@ class Engineorder < ActiveRecord::Base
     self._orig_new_engine = engine
   end
 
-  # 旧エンジンをセットする
-  alias :_orig_old_engine= :old_engine=
-  def old_engine=(engine)
+  # 旧エンジンを差し替える
+  def switch_old_engine(engine)
     if self.old_engine && self.old_engine != engine
       # 旧エンジンが指定済みの場合は、その旧エンジンをサスペンド状態に変更する
       self.old_engine.suspend!
       self.old_engine.save!
     end
-    self._orig_old_engine = engine
+    self.old_engine = engine
   end
 
   # ステータスの確認メソッド集 --------------- #

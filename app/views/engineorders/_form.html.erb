@@ -98,8 +98,19 @@
   </div>
 
   <div class="field">
-    <%= f.label :old_engine_id %><br>
-    <%= f.collection_select( :old_engine_id, Engine.all, :id, :engine_name, :include_blank => true ) %>
+    <%= f.label :old_engine %>
+    <%= f.fields_for :old_engine do |engine_form| %>
+      <table>
+        <tr>
+          <td><%= Engine.human_attribute_name "engine_model_name" %></td>
+          <td><%= engine_form.collection_select :engine_model_name, Enginemodel.all, :modelcode, :name, include_blank: true %></td>
+        </tr>
+        <tr>
+          <td><%= Engine.human_attribute_name "serialno" %></td>
+          <td><%= engine_form.text_field :serialno %></td>
+        </tr>
+      </table>
+    <% end %>
   </div>
 
 <% #引当登録以降の場合は、新エンジンを表示 %> 

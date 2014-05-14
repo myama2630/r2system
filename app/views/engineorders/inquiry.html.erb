@@ -83,19 +83,20 @@
 
 
   <div class="field">
-    <label for="old_engine">返却エンジン</label>
-    <div id="old_engine">
-      <% if old_engine = @engineorder.old_engine
-           old_engine_model_name = old_engine.engine_model_name
-           old_engine_serialno = old_engine.serialno
-         end %>
-      <%= select_tag(:old_engine_model_name,
-                     options_from_collection_for_select(Enginemodel.all, :modelcode, :name, old_engine_model_name),
-                     include_blank: true) %>
-      <%= text_field_tag :old_engine_serialno, old_engine_serialno, placeholder: "シリアルNo." %>
-    </div>
+    <%= f.label :old_engine %>
+    <%= f.fields_for :old_engine do |engine_form| %>
+      <table>
+        <tr>
+          <td><%= Engine.human_attribute_name "engine_model_name" %></td>
+          <td><%= engine_form.collection_select :engine_model_name, Enginemodel.all, :modelcode, :name, include_blank: true %></td>
+        </tr>
+        <tr>
+          <td><%= Engine.human_attribute_name "serialno" %></td>
+          <td><%= engine_form.text_field :serialno %></td>
+        </tr>
+      </table>
+    <% end %>
   </div>
-
 
   <div class="field">
     <%= f.label :time_of_running %><br>

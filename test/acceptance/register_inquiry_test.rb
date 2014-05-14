@@ -23,15 +23,17 @@ class RegisterInquiryTest < AcceptanceTest
     fill_in "engineorder_old_engine_attributes_serialno", with: "001"
     save_screenshot "RegisterInquiryTest1-06.png"
     # 7. 引合を登録する
-    click_button "引合登録"
-    confirm
-    within "body>div.container" do
-      assert_match /物件1/, find("div.field:nth-child(3)").text
-      assert_match /引合/, find("div.field:nth-child(4)").text
-      assert_match /YES名古屋営業/, find("div.field:nth-child(7)").text
-      assert_match /エンジンモデルコード2 \( 001 \)/, find("div.field:nth-child(27)").text
+    assert_difference "Engineorder.count" do
+      click_button "引合登録"
+      confirm
+      within "body>div.container" do
+        assert_match /物件1/, find("div.field:nth-child(3)").text
+        assert_match /引合/, find("div.field:nth-child(4)").text
+        assert_match /YES名古屋営業/, find("div.field:nth-child(7)").text
+        assert_match /エンジンモデルコード2 \( 001 \)/, find("div.field:nth-child(27)").text
+      end
+      save_screenshot "RegisterInquiryTest1-07.png"
     end
-    save_screenshot "RegisterInquiryTest1-07.png"
     # 8. 拠点ユーザがサインアウトする
     sign_out
     save_screenshot "RegisterInquiryTest1-08.png"

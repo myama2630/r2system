@@ -180,7 +180,7 @@
   <%= f.hidden_field :businessstatus_id %>
 
   <div class="actions">
-    <%= f.submit(:confirm => t('views.confirm_msg_cmn')) %>
+    <%= f.submit data: {confirm: t('views.confirm_msg_cmn')} %>
   </div>
 <% end %>
 </body>

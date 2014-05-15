@@ -71,20 +71,19 @@ class EngineordersController < ApplicationController
                             status: Enginestatus.of_after_shipping)
     if engine
       @engineorder.old_engine = engine
-      @engineorder.old_engine.status = Enginestatus.of_about_to_return
     else
       @engineorder.old_engine = Engine.new(engine_model_name: @engineorder.old_engine.engine_model_name,
                                            serialno: @engineorder.old_engine.serialno,
-                                           status: Enginestatus.of_about_to_return,
+                                           status: Enginestatus.of_after_shipping,
                                            company: current_user.company)
     end
 
     #old_engine_idのvalidateチェックを実行させるため、
     #old_engine_idがある場合のみ、エンジンステータス変更を実施するように変更する。
-    unless @engineorder.old_engine_id.blank?
-      @engineorder.old_engine.status = Enginestatus.of_about_to_return
-      @engineorder.old_engine.save
-    end
+    #unless @engineorder.old_engine_id.blank?
+    #  @engineorder.old_engine.status = Enginestatus.of_about_to_return
+    #  @engineorder.old_engine.save
+    #end
     
     respond_to do |format|
       if @engineorder.save
@@ -113,6 +112,23 @@ class EngineordersController < ApplicationController
       unless new_engine.id == engineorder_params[:new_engine_id]
         @engineorder.undo_allocation
       end
+    end
+
+    # 返却エンジンが修正された場合、返却エンジンを新規登録する
+    # 既存エンジンの状態は、
+    #   * 出荷済み (返却エンジンが画面で修正され、かつ、修正後の返却エンジンが登録済みの場合)
+    #   * 返却予定 (返却エンジンが画面で修正されなかった場合)
+    # となる。
+    engine = Engine.find_by(engine_model_name: @engineorder.old_engine.engine_model_name,
+                            serialno: @engineorder.old_engine.serialno,
+                            status: Enginestatus.of_after_shipping)
+    if engine
+      @engineorder.old_engine = engine
+    else
+      @engineorder.old_engine = Engine.new(engine_model_name: @engineorder.old_engine.engine_model_name,
+                                           serialno: @engineorder.old_engine.serialno,
+                                           status: Enginestatus.of_after_shipping,
+                                           company: current_user.company)
     end
 
     # 流通ステータスをセットする。(privateメソッド)
@@ -255,8 +271,9 @@ class EngineordersController < ApplicationController
 
     when params[:commit] == t('views.buttun_inquiry')
       # 引合画面からの更新の場合
-      @engineorder.old_engine.status = Enginestatus.of_about_to_return
-      @engineorder.old_engine.save
+      # 引合登録時は旧エンジンの返却は確定していないので、受領前状態に遷移しない
+      # @engineorder.old_engine.status = Enginestatus.of_about_to_return
+      # @engineorder.old_engine.save
     
     end
     
@@ -272,7 +289,7 @@ class EngineordersController < ApplicationController
     when params[:commit] == t('views.buttun_inquiry')
       # 引合登録の場合
       # 流通ステータスを、「引合」にセットする。
-      setOldEngine
+      #setOldEngine
       @engineorder.status = Businessstatus.of_inquiry
     when params[:commit] == t('views.buttun_ordered')
       # 受注登録の場合
@@ -351,7 +368,7 @@ class EngineordersController < ApplicationController
       :enginestatus_id,:invoice_no_new, :invoice_no_old, :day_of_test,
       :shipped_date, :shipped_comment, :returning_date, :returning_comment, :title,
       :returning_place_id, :allocated_date,:install_place_attributes => [:id,:install_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy],
-      :old_engine_attributes => [:engine_model_name, :serialno]
+      :old_engine_attributes => [:id, :engine_model_name, :serialno]
     )
   end
 end

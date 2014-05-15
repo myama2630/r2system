@@ -30,7 +30,7 @@
     <% if @engineorder.branch.nil? %>
       <% order_branch_id = current_user.company_id %>
     <% else %> 
-      <% oder_branch_id = @engineorder.branch %>
+      <% order_branch_id = @engineorder.branch.id %>
     <% end %>
     <%= f.hidden_field(:branch_id, :value => order_branch_id) %><br>
   <% end %>

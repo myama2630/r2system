@@ -184,4 +184,9 @@ class Engineorder < ActiveRecord::Base
       false
     end
   end
+
+  def old_engine_attributes=(attrs)
+    self.old_engine = Engine.find_or_initialize_by(id: attrs.delete(:id))
+    self.old_engine.attributes = attrs
+  end
 end

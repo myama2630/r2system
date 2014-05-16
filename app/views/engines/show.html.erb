@@ -14,7 +14,7 @@
   <%= @engine.serialno %>
   </div>
 
-<% if current_user.yesOffice? %>
+<% if current_user.yesOffice? || current_user.systemAdmin?%>
   <div class="field">
     <%= Engine.human_attribute_name('company') %>
   <%= @engine.company.name %>
@@ -27,7 +27,7 @@
   </div>
 
 <br><br>
-<% if current_user.yesOffice? %>
+<% if current_user.yesOffice? || current_user.systemAdmin? %>
   <%= link_to t('views.link_edit'), edit_engine_path(@engine) %> |
 <% end %>
-<%= link_to t('views.link_back'), engines_path %>
+<%= link_to t('views.link_back'), anchor_path %>

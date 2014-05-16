@@ -1,6 +1,9 @@
 class EnginesController < ApplicationController
   before_action :set_engine, only: [:show, :edit, :update, :destroy]
 
+  after_action :anchor!, only: [:index]
+  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update]
+
   autocomplete :engine, :engine_model_name, :full => true #, :extra_data => [:default_client_id, :default_client_name]
   
   # GET /engines
@@ -28,8 +31,8 @@ class EnginesController < ApplicationController
         # 方が性能も可読性もあがると思いました。
 
         #YES本社の場合は、初期表示では条件を使用しないため、
-        #本社以外の場合に、検索条件をセットする。
-        unless current_user.yesOffice?
+        #本社以外の場合に、検索条件をセットする。(システム管理者もYES本社と同じ扱い)
+        unless (current_user.yesOffice? || current_user.systemAdmin?)
           @searched[:company_id] = current_user.company_id
         end
       else
@@ -77,8 +80,8 @@ class EnginesController < ApplicationController
     # order 指定を paginate の引数で指定すると、実行時に will_paginate 内で
     # deprecated 警告が出たので、外に出しました。
 #    @engines = Engine.where(cond.reduce(&:and)).order(:id).paginate(page: params[:page], per_page: 10)
-    @engines = Engine.where(cond.reduce(&:and)).order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
-
+    @engines = Engine.where(cond.reduce(&:and)).order(:enginestatus_id,:engine_model_name,:serialno).paginate(page: params[:page], per_page: 10)
+    adjust_page(@engines)
   end
 
   # GET /engines/1
@@ -130,7 +133,7 @@ class EnginesController < ApplicationController
   def destroy
     @engine.destroy
     respond_to do |format|
-      format.html { redirect_to engines_url }
+      format.html { redirect_to anchor_path }
       format.json { head :no_content }
     end
   end
@@ -139,6 +142,14 @@ class EnginesController < ApplicationController
   def import
     Engine.import(params[:file])
     redirect_to action: "index", notice: t("controller_meg.engine_imported")
+  end
+
+  # エンジン型式に対応するシリアルNo.リストを抽出する
+  def list_serialno
+    respond_to do |format|
+      engines = Engine.completed.where(engine_model_name: params[:engine_model_name])
+      format.json { render json: engines.map { |e| e.serialno }.uniq }
+    end
   end
 
   private

@@ -1,10 +1,23 @@
 class EngineordersController < ApplicationController
   before_action :set_engineorder, only: [:show, :edit, :update, :destroy]
 
+  after_action :anchor!, only: [:index]
+  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :inquiry, :ordered, :allocated, :shipped, :returning, :undo_allocation]
+
   # GET /engineorders
   # GET /engineorders.json
   def index
+  	  
+  	if current_user.yesOffice? || current_user.systemAdmin?
     @engineorders = Engineorder.all.order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+    adjust_page(@engineorders)
+    
+    else
+    
+    @engineorders = Engineorder.where(:branch_id => current_user.company_id).order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
+    adjust_page(@engineorders)
+    
+    end
   end
 
   # GET /engineorders/1
@@ -15,10 +28,22 @@ class EngineordersController < ApplicationController
   # GET /engineorders/new
   def new
     @engineorder = Engineorder.new
+    @engineorder.install_place = Place.new
+    @engineorder.sending_place = Place.new
   end
 
   # GET /engineorders/1/edit
   def edit
+    if @engineorder.install_place.nil?
+      @engineorder.install_place = Place.new
+    end
+    if @engineorder.sending_place.nil?
+      @engineorder.sending_place = Place.new
+    end
+    if @engineorder.new_engine.nil?
+      @engineorder.new_engine = Engine.new
+    end
+
     #流通ステータスでレンダリング先を変える。
     # switch 文のような if 文の並びは case 文で書くとすっきりします。
     # 受注オブジェクトの状態問い合わせメソッドを lower-camel-case から
@@ -45,14 +70,28 @@ class EngineordersController < ApplicationController
     # 発行Noを自動採番する
     @engineorder.issue_no = Engineorder.createIssueNo
     # エンジンのステータスを返却予定にする
-    setOldEngine
+    # 返却エンジンを手入力するので、返却エンジンの ID は指定されてこない
+    # setOldEngine
+
+    # 返却エンジンを新規登録する (すでに登録済みの場合は、そのエンジンを使う)
+    engine = Engine.find_by(engine_model_name: @engineorder.old_engine.engine_model_name,
+                            serialno: @engineorder.old_engine.serialno,
+                            status: Enginestatus.of_after_shipping)
+    if engine
+      @engineorder.old_engine = engine
+    else
+      @engineorder.old_engine = Engine.new(engine_model_name: @engineorder.old_engine.engine_model_name,
+                                           serialno: @engineorder.old_engine.serialno,
+                                           status: Enginestatus.of_after_shipping,
+                                           company: current_user.company)
+    end
 
     #old_engine_idのvalidateチェックを実行させるため、
     #old_engine_idがある場合のみ、エンジンステータス変更を実施するように変更する。
-    unless @engineorder.old_engine_id.blank?
-      @engineorder.old_engine.status = Enginestatus.of_about_to_return
-      @engineorder.old_engine.save
-    end
+    #unless @engineorder.old_engine_id.blank?
+    #  @engineorder.old_engine.status = Enginestatus.of_about_to_return
+    #  @engineorder.old_engine.save
+    #end
     
     respond_to do |format|
       if @engineorder.save
@@ -70,6 +109,37 @@ class EngineordersController < ApplicationController
   def update
     # 流通ステータスをセットする。(privateメソッド)
     setBusinessstatus
+
+    # 引当の場合
+    if @engineorder.shipping_preparation?
+      # 引当時の新規エンジンは常に登録済み
+      if attrs = engineorder_params[:new_engine_attributes]
+        new_engine = Engine.find_by(attrs)
+      end
+      # すでに新エンジンが登録されていて、入力された新エンジンが現在の新エンジン
+      # と異なる場合、一旦引当の取消が必要と判断する
+      if @engineorder.new_engine && @engineorder.new_engine != new_engine
+        @engineorder.undo_allocation
+      end
+      @engineorder.new_engine = new_engine
+    end
+
+    # 返却エンジンが修正された場合、返却エンジンを新規登録する
+    # 既存エンジンの状態は、
+    #   * 出荷済み (返却エンジンが画面で修正され、かつ、修正後の返却エンジンが登録済みの場合)
+    #   * 返却予定 (返却エンジンが画面で修正されなかった場合)
+    # となる。
+    engine = Engine.find_by(engine_model_name: @engineorder.old_engine.engine_model_name,
+                            serialno: @engineorder.old_engine.serialno,
+                            status: Enginestatus.of_after_shipping)
+    if engine
+      @engineorder.old_engine = engine
+    else
+      @engineorder.old_engine = Engine.new(engine_model_name: @engineorder.old_engine.engine_model_name,
+                                           serialno: @engineorder.old_engine.serialno,
+                                           status: Enginestatus.of_after_shipping,
+                                           company: current_user.company)
+    end
 
     respond_to do |format|
       if @engineorder.update(engineorder_params)
@@ -89,7 +159,7 @@ class EngineordersController < ApplicationController
   def destroy
     @engineorder.destroy
     respond_to do |format|
-      format.html { redirect_to engineorders_url }
+      format.html { redirect_to anchor_path }
       format.json { head :no_content }
     end
   end
@@ -111,7 +181,9 @@ class EngineordersController < ApplicationController
         end
       else
         @engineorder = Engineorder.new
+        @engineorder.old_engine = Engine.new
       end
+        @engineorder.install_place = Place.new
     end
   end
 
@@ -123,6 +195,9 @@ class EngineordersController < ApplicationController
   # 引当の処理
   def allocated
     set_engineorder
+    if @engineorder.new_engine.nil?
+      @engineorder.new_engine = Engine.new
+    end
   end
 
   # 出荷の処理
@@ -133,6 +208,32 @@ class EngineordersController < ApplicationController
   # 返却の処理
   def returning
     set_engineorder
+  end
+
+  # 引当の取り消し
+  def undo_allocation
+    set_engineorder
+
+    # エンジンオーダと新エンジンの状態に不整合が生じないよう、更新をひとつ
+    # のトランザクションにまとめる
+    ActiveRecord::Base.transaction do
+      respond_to do |format|
+        if @engineorder.undo_allocation
+          # 取り消し成功時は、エンジンオーダの詳細画面にリダイレクト
+          format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_allocation_undone") }
+          format.json { head :no_content }
+        else
+          # 引当の取り消しのための前提条件を満たしていない場合、エンジンオーダ
+          # 詳細画面の notice メッセージとして、その旨を通知
+          format.html { redirect_to @engineorder, notice: t("controller_msg.engineorder_allocation_not_undoable") }
+          format.json { head :no_content }
+        end
+      end
+    end
+  rescue
+    # 引当の取り消しのための前提条件は満たしていたが、データベースの更新に失敗
+    # まずは、標準のエラー画面に遷移
+    raise
   end
 
   def editByStatus
@@ -154,8 +255,8 @@ class EngineordersController < ApplicationController
       # 出荷画面からの更新の場合
       # 新エンジンのステータスを出荷済みにセットする。
       @engineorder.new_engine.status = Enginestatus.of_after_shipping
-      # 新エンジンの会社を設置先に変更し、DBに反映する
-      @engineorder.new_engine.company = @engineorder.install_place
+      # 新エンジンの会社を拠点に変更し、DBに反映する
+      @engineorder.new_engine.company = @engineorder.branch
       @engineorder.new_engine.save
       # 出荷しようとしている新エンジンに関わる整備オブジェクトを取得する
       if repair = @engineorder.repair_for_new_engine
@@ -180,8 +281,9 @@ class EngineordersController < ApplicationController
 
     when params[:commit] == t('views.buttun_inquiry')
       # 引合画面からの更新の場合
-      @engineorder.old_engine.status = Enginestatus.of_about_to_return
-      @engineorder.old_engine.save
+      # 引合登録時は旧エンジンの返却は確定していないので、受領前状態に遷移しない
+      # @engineorder.old_engine.status = Enginestatus.of_about_to_return
+      # @engineorder.old_engine.save
     
     end
     
@@ -197,7 +299,7 @@ class EngineordersController < ApplicationController
     when params[:commit] == t('views.buttun_inquiry')
       # 引合登録の場合
       # 流通ステータスを、「引合」にセットする。
-      setOldEngine
+      #setOldEngine
       @engineorder.status = Businessstatus.of_inquiry
     when params[:commit] == t('views.buttun_ordered')
       # 受注登録の場合
@@ -246,21 +348,42 @@ class EngineordersController < ApplicationController
     end
   end
 
+  def ensure_existence_of_engine(assoc_name, company, status)
+    if attrs = params[:engineorder].delete("#{assoc_name}_attributes".intern)
+      params[:engineorder]["#{assoc_name}_id".intern] =
+        Engine.find_or_create_by(engine_model_name: attrs[:engine_model_name],
+                                 serialno: attrs[:serialno]) { |engine|
+          engine.status = status
+          engine.company = company
+        }.id
+    end
+  end
+
   # Use callbacks to share common setup or constraints between actions.
   def set_engineorder
     @engineorder = Engineorder.find(params[:id])
+    if @engineorder.install_place.nil?
+      @engineorder.install_place = Place.new
+    end
+    if @engineorder.sending_place.nil?
+      @engineorder.sending_place = Place.new
+    end
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def engineorder_params
     params.require(:engineorder).permit(
       :issue_no, :inquiry_date, :registered_user_id, :updated_user_id,
-      :branch_id, :salesman_id, :install_place_id, :orderer, :machine_no,
-      :time_of_running, :change_comment, :order_date, :sending_place_id,
+      :branch_id, :salesman_id, :install_place, :install_place_id, :orderer, :machine_no,
+      :time_of_running, :change_comment, :order_date, :sending_place ,:sending_place_id,
       :sending_comment, :desirable_delivery_date, :businessstatus_id,
-      :new_engine_id, :old_engine_id, :old_engine, :new_engine,
+      :new_engine_id, :old_engine_id,
       :enginestatus_id,:invoice_no_new, :invoice_no_old, :day_of_test,
-      :shipped_date, :returning_date, :returning_comment, :title,
-      :returning_place_id, :allocated_date)
+      :shipped_date, :shipped_comment, :returning_date, :returning_comment, :title,
+      :returning_place_id, :allocated_date,
+      :install_place_attributes => [:id,:install_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy],
+      :sending_place_attributes => [:id,:sending_place_id, :name, :category, :postcode, :address, :phone_no, :destination_name, :_destroy],
+      :old_engine_attributes => [:id, :engine_model_name, :serialno],
+      :new_engine_attributes => [:engine_model_name, :serialno])
   end
 end

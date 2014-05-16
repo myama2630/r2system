@@ -4,15 +4,23 @@
  <div class="alert alert-danger">サスペンド状態のエンジンがあります。</div>
 <% end %>
 <h3>業務</h3>
-<p><%= link_to 'エンジン一覧', engines_path %></p>
 
-<% unless current_user.tender? %>
+<% if current_user.yesOffice? || current_user.tender? || current_user.systemAdmin?%>
+  <p><%= link_to 'エンジン一覧', engines_path %></p>
+<% end %>
+
+
+<% if current_user.yes? || current_user.systemAdmin? %>
   <p><%= link_to '流通情報一覧', engineorders_path %></p>
 <% end %>
-<p><%= link_to '整備会社作業一覧', repairs_path %></p>
+
+<% if current_user.yesOffice? || current_user.tender? || current_user.systemAdmin?%>
+  <p><%= link_to '整備会社作業一覧', repairs_path %></p>
+<% end %>
+
 <br>
 
-<% unless current_user.tender? %>
+<% if current_user.yesOffice? || current_user.systemAdmin? %>
  <h3>マスター管理</h3>
  <p><%= link_to '法人', companies_path %></p>
  <p><%= link_to 'ビジネスステータス', businessstatuses_path %></p>

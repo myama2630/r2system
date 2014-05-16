@@ -14,10 +14,10 @@
       <th><%= Engineorder.human_attribute_name('allocated_date') %></th>
       <th><%= Engineorder.human_attribute_name('shipped_date') %></th>
       <th><%= Engineorder.human_attribute_name('returning_date') %></th>
-      <% if current_user.yesOffice? %>
+      <% if current_user.yesOffice? || current_user.systemAdmin? %>
         <th colspan=8 rowspan=2>作業登録</th> <!-- YES本社の人の作業数だけ列を繋げる -->
       <% elsif current_user.yesBranch? %>
-        <th colspan=8 rowspan=2>作業登録</th> <!-- YES	点の人の作業数だけ列を繋げる -->
+        <th colspan=7 rowspan=2>作業登録</th> <!-- YES拠点の人の作業数だけ列を繋げる -->
       <% end %>
 </tr>
 <tr>
@@ -33,7 +33,7 @@
       <tr>
         <td rowspan="2" class="vtop"><%= engineorder.status.name %></td>
         <td rowspan="2" class="vtop"><%= engineorder.title %></td>
-        <td rowspan="2" class="vtop"><%= Company.find(engineorder.install_place_id).name unless engineorder.install_place_id.nil? %></td>
+        <td rowspan="2" class="vtop"><%= Place.find(engineorder.install_place_id).name unless engineorder.install_place_id.nil? %></td>
         <td rowspan="2" class="vtop"><%= engineorder.issue_no %></td>
 
         <td><%= engineorder.inquiry_date %></td>
@@ -42,15 +42,8 @@
         <td><%= engineorder.allocated_date %></td>
         <td><%= engineorder.shipped_date %></td>
         <td><%= engineorder.returning_date %></td>
-
-        <td  rowspan="2"><%= link_to '引合', edit_inquery_path(engineorder) , class: "workregist_work" %></td>
-        <td  rowspan="2"><%= link_to '受注', ordered_path(engineorder), class: "workregist_work" %></td>
-        <td  rowspan="2"><%= link_to '引当', allocated_path(engineorder), class: "workregist_work" %></td>
-        <td  rowspan="2"><%= link_to '出荷', shipped_path(engineorder), class: "workregist_work" %></td>
-        <td  rowspan="2"><%= link_to '返却', returning_path(engineorder), class: "workregist_work" %></td>
-        <td  rowspan="2"><%= link_to '詳細', engineorder, class: "workregist_show"  %></td>
-        <td  rowspan="2"><%= link_to '修正', edit_engineorder_path(engineorder), class: "workregist_edit"  %></td>
-        <td  rowspan="2"><%= link_to '削除', engineorder, method: :delete, data: { confirm: '削除してもよろしいですか？' }, class: "workregist_del" %></td>
+        
+        <%= render "indexlink" , engineorder: engineorder %>
 </tr>
 <tr> 
         <td>
@@ -62,7 +55,7 @@
           <%= '('+Engine.find(engineorder.new_engine_id).serialno+')'  unless engineorder.new_engine_id.nil?%>
           </td>
         <td colspan=2><%= Company.find(engineorder.branch_id).name unless engineorder.branch_id.nil? %></td>
-        <td colspan=2><%= Company.find(engineorder.sending_place_id).name unless engineorder.sending_place_id.nil? %></td>
+        <td colspan=2><%= Place.find(engineorder.sending_place_id).name unless engineorder.sending_place_id.nil? %></td>
       </tr>
     <% end %>
   </tbody>

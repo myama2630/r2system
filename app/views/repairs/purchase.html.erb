@@ -1,0 +1,86 @@
+<h1>仕入確認</h1>
+
+<%= form_for(@repair) do |f| %>
+  <%= render "errormsg" , modeldata: @repair %>
+
+<div class="row">
+  <div class="col-md-4">
+  <%= render 'engineInfo' %>
+  <% disabled_data = getDisabled_RepairFinished %>
+
+<br>
+
+  <div class="field">
+    <%= f.label :finish_date %><br>
+    <%= f.date_select :finish_date, :use_month_numbers => true, :start_year => 2000 %>
+  </div>
+  <div class="field">
+    <%= f.label :after_comment %><br>
+    <%= f.text_area :after_comment %>
+  </div>
+  <div class="field">
+    <%= f.label :checkpaper %><br>
+    <%= f.file_field :checkpaper %> 
+  </div>
+  <br>
+  <br>
+  <div class="actions">
+    <%= f.submit :value => t('views.buttun_repairpurchase'), :confirm => t('views.buttun_repairpurchase')+t('views.confirm_msg') %>
+  </div>
+  <br>
+  <%= link_to t('views.link_back'), anchor_path %>
+</div>
+
+
+<div class="well col-md-8">
+ <div class="field">
+    <%= f.label :order_no %><br>
+    <%= f.text_field :order_no, :disabled=> true %>
+  </div>
+  <div class="field">
+    <%= f.label :order_date %><br>
+    <%= f.text_field :order_date, :disabled=> true %>
+  </div>
+<% if false %>
+  <div class="field">
+    <%= f.label :order_no %><br>
+    <%= f.text_field :order_no, :disabled=> disabled_data[:order_no] %>
+  </div>
+  <div class="field">
+    <%= f.label :order_date %><br>
+    <%= f.text_field :order_date, :disabled=> disabled_data[:order_date] %>
+  </div>
+<% end %>
+  <div class="field">
+    <%= f.label :construction_no %><br>
+    <%= f.text_field :construction_no, :disabled=> disabled_data[:construction_no] %>
+  </div>
+  <div class="field">
+    <%= f.label :desirable_finish_date %><br>
+    <%= f.date_select :desirable_finish_date, :use_month_numbers => true, :disabled=>disabled_data[:desirable_finish_date], :start_year => 2000 %>
+  </div>
+
+  <div class="field">
+    <%= label_tag '整備依頼書' %><br>
+    <% if @repair.requestpaper.present? %>
+      <%= link_to "ダウンロード", @repair.requestpaper_url(:display), :target=>'_blank', class: "btn btn-xs btn-default" %>
+    <% else %>
+      ファイルなし
+    <% end %>
+  </div>
+
+  <div class="field">
+    <%= f.label :start_date %><br>
+    <%= f.date_select :start_date, :use_month_numbers => true, :disabled=>disabled_data[:start_date], :start_year => 2000 %>
+  </div>
+  <div class="field">
+    <%= f.label :estimated_finish_date %><br>
+    <%= f.date_select :estimated_finish_date, :use_month_numbers => true, :disabled=>disabled_data[:estimated_finish_date], :start_year => 2000 %>
+  </div>
+  <div class="field">
+    <%= f.label :before_comment %><br>
+    <%= f.text_area :before_comment, :disabled=>disabled_data[:before_comment] %>
+  </div>
+  </div>
+  </div>
+<% end %>

@@ -1,5 +1,4 @@
 # coding: utf-8
-require 'engineorder'
 
 class Engine < ActiveRecord::Base
   # config/initializers/constants.rb で一元的に定義した定数モジュールを取り込ん
@@ -68,6 +67,11 @@ class Engine < ActiveRecord::Base
     # くなるので、性能も上がるはずです。
 
     repairs.opened.first
+  end
+
+  # このエンジンに関する直近の完了済み整備を取得
+  def last_repair
+    repairs.completed.order(finish_date: :desc).limit(1).first
   end
 
   # Get unclosed order (this engine is old engine for it and it is not unclosed)
@@ -168,6 +172,11 @@ class Engine < ActiveRecord::Base
     status.id == Enginestatus.of_after_shipping.id
   end
 
+  # 返却予定状態かどうか？
+  def about_to_return?
+    status.id == Enginestatus.of_about_to_return.id
+  end
+
   # 廃却状態かどうか？
   def abolished?
     status.id == Enginestatus.of_abolished.id
@@ -176,10 +185,19 @@ class Engine < ActiveRecord::Base
 #エンジンのCSVをインポートする
 def self.import(file)
   CSV.foreach(file.path, headers: true) do |row|
+    #もし、エンジンモデルクラスの型式に、同じ型式が存在しなかったら、そのデータは登録しない。
+    import_row = row.to_hash
+
+    if Enginemodel.where(name: import_row["engine_model_name"]).empty?
+      return false
+    end
+  end
+  #全て正しい型式が存在した場合のみ、データを登録する。
+  CSV.foreach(file.path, headers: true) do |row|
     Engine.create! row.to_hash
   end
+  return true
 end
-
 
 
 end

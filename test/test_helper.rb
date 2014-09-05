@@ -45,7 +45,8 @@ class AcceptanceTest < ActionDispatch::IntegrationTest
     #Capybara.default_driver = :selenium_ie
 
     Capybara.default_wait_time = 60
-    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.start
     page.driver.browser.manage.window.maximize
   end
 
@@ -80,6 +81,7 @@ class AcceptanceTest < ActionDispatch::IntegrationTest
   def save_screenshot(fname)
     unless Capybara.default_driver == :rack_test
       mkdir_p SCREENSHOTS_DIR
+      sleep 1
       super(File.join(SCREENSHOTS_DIR, fname))
     end
   end

@@ -1,98 +1,71 @@
 company1:
-  id: 1
   name: YES本社
   category: YES本社
   postcode: 123-4567
   address: 大阪市大淀区大淀中4丁目
   phone_no: 06-6123-4567
   destination_name: 荒井様
-  created_at: 
-  updated_at: 2013-12-03 00:30:03.963604
 
 company2:
-  id: 2
   name: 西宮戎リペア
   category: 整備会社
   postcode: 123-4567
   address: 兵庫県西宮市戎西町
   phone_no: 06-6123-4567
   destination_name: 恵比寿様
-  created_at: 
-  updated_at: 2013-12-03 00:31:07.980266
 
 company3:
-  id: 3
   name: 大須観音工機
   category: 整備会社
   postcode: 123-4567
   address: 名古屋市中区大須
   phone_no: 06-6123-4567
   destination_name: 観世音菩薩様
-  created_at: 
-  updated_at: 2013-12-03 00:32:02.993412
 
 company4:
-  id: 4
   name: 川口住宅設備
   category: 工事会社
   postcode: 123-4568
   address: 大阪市西区川口8丁目
   phone_no: 06-6123-4567
   destination_name: 基督様
-  created_at: 2013-12-03 00:32:22.196511
-  updated_at: 2013-12-03 00:33:26.271175
 
 company5:
-  id: 5
   name: 巣鴨空調設備
   category: 工事会社
   postcode: 123-4567
   address: 東京都練馬区巣鴨
   phone_no: 03-1234-5678
   destination_name: 棘貫様
-  created_at: 2013-12-03 00:35:01.316612
-  updated_at: 2013-12-03 00:35:01.316612
 
 company6:
-  id: 6
   name: 聖路加病院
   category: 顧客
   postcode: 333-4567
   address: 東京都江東区
   phone_no: 03-1234-5678
   destination_name: 万梨阿様
-  created_at: 2013-12-03 00:36:44.574518
-  updated_at: 2013-12-03 00:36:44.574518
 
 company7:
-  id: 7
   name: 法華倶楽部
   category: 顧客
   postcode: 333-4567
   address: 大阪市東淀川区
   phone_no: 06-6123-4567
   destination_name: 法蓮華様
-  created_at: 2013-12-03 00:39:10.158845
-  updated_at: 2013-12-03 00:39:10.158845
 
 company8:
-  id: 8
   name: YES名古屋営業
   category: YES拠点
   postcode: 432-1111
   address: 名古屋市中区東新町
   phone_no: 053-555-6666
   destination_name: 豊田様
-  created_at: 2013-12-03 00:40:17.084673
-  updated_at: 2013-12-03 00:40:17.084673
 
 company9:
-  id: 9
   name: YES大阪営業
   category: YES拠点
   postcode: 123-4568
   address: 大阪市大北区万歳町
   phone_no: 06-6123-4567
   destination_name: 大橋拠点
-  created_at: 2013-12-03 00:41:32.758001
-  updated_at: 2013-12-03 00:41:32.758001

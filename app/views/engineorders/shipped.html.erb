@@ -37,38 +37,68 @@
 
     <div class="field">
       <%= f.label :shipped_date %><br>
-      <%= f.date_select :shipped_date, :use_month_numbers => true %>
+      <%= f.date_select :shipped_date, :use_month_numbers => true, :start_year => 2005 %>
     </div>
 
     <div class="field">
       <%= f.label :shipped_comment %><br>
       <%= f.text_area :shipped_comment %>
     </div>
-
+<br>
     <div class="actions">
       <%= f.submit :value => t('views.buttun_shipped'), :confirm => t('views.buttun_shipped')+t('views.confirm_msg') %>
     </div>
-    <% if current_user.yesOffice? %>
-      <%= link_to t('views.link_back'), engineorders_path %>
+<br>
+    <% if current_user.yes? %>
+      <%= link_to t('views.link_back'), anchor_path %>
     <% else %>
-      <%= link_to t('views.link_back'), engines_path %>
+      <%= link_to t('views.link_back'), anchor_path %>
     <% end %>
   </div>
 
   <div class="well col-sm-7">
     <div class="field">
       <%= f.label :inquiry_date %><br>
-      <%= f.date_select :inquiry_date, :use_month_numbers => true, :disabled=>disabled_data[:inquiry_date] %>
+      <%= f.date_select :inquiry_date, :use_month_numbers => true, :disabled=>disabled_data[:inquiry_date], :start_year => 2005 %>
     </div>
 
-    <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch } %>
+    <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch, disabled_info: disabled_data[:branch]  } %>
 
     <div class="field">
       <%= f.label :salesman_id %><br>
       <%= f.collection_select( :salesman_id, User.all, :id, :name, {} ,{:include_blank => false , :disabled=>disabled_data[:salesman_id]}) %>
     </div>
 
-    <%= render "location", {f: f, attr_name: "install_place", location: @engineorder.install_place } %>
+<!-- のちほど別erbに切り出す。-->
+  <div class="field">
+    <%= f.label :install_place_id %>
+    <%= f.fields_for :install_place do |p| %>
+      <table>
+        <tr>
+          <td>〒</td>
+          <td><%= p.text_field :postcode , :size => 8, :disabled=> disabled_data[:install_place] %></td>
+        </tr>
+        <tr>
+          <td>住所</td>
+          <td><%= p.text_field :address , :size => 40 , :disabled=> disabled_data[:install_place]  %></td>
+        </tr>
+        <tr>
+          <td>TEL</td>
+          <td><%= p.text_field :phone_no , :size => 15, :disabled=> disabled_data[:install_place]   %></td>
+        </tr>
+        <tr>
+          <td>設置先名</td>
+          <td><%= p.text_field :name , :size => 20 , :disabled=> disabled_data[:install_place] %></td>
+        </tr>
+        <tr>
+          <td>担当者</td>
+          <td><%= p.text_field :destination_name , :size => 20 , :disabled=> disabled_data[:install_place] %></td>
+        </tr>
+      </table>
+    <% end %>
+  </div>
+<!-- のちほど別erbに切り出す。-->
+
 
     <div class="field">
       <%= f.label :orderer %><br>
@@ -77,9 +107,9 @@
 
     <% unless current_user.tender? %>
     <div class="field">
-      返却エンジン型式 <br>
+      <%= f.label :old_engine_model_name %><br>
       <%= text_field_tag 'engine_model_name', @engineorder.old_engine.engine_model_name, :disabled=>true %><br>
-      返却エンジンS/# <br>
+      <%= f.label :old_serialno %><br>
       <%= text_field_tag 'serialno', @engineorder.old_engine.serialno, :disabled=>true %><br>
      </div>
     <% end %>
@@ -90,7 +120,7 @@
     </div>
     <div class="field">
       <%= f.label :day_of_test %><br>
-      <%= f.date_select :day_of_test, :use_month_numbers => true, :start_year => Engine::EARLIEST_START_YEAR, :disabled=>disabled_data[:day_of_test] %>
+      <%= f.date_select :day_of_test, :use_month_numbers => true, :start_year => Engine::EARLIEST_START_YEAR, :disabled=>disabled_data[:day_of_test], :start_year => 1990 %>
     </div>
 
     <div class="field">
@@ -105,11 +135,39 @@
 
     <div class="field">
       <%= f.label :desirable_delivery_date %><br>
-      <%= f.date_select :desirable_delivery_date, :use_month_numbers => true, :disabled=>disabled_data[:desirable_delivery_date] %>
+      <%= f.date_select :desirable_delivery_date, :use_month_numbers => true, :disabled=>disabled_data[:desirable_delivery_date], :start_year => 2005 %>
     </div>
 
 
-    <%= render "location", {f: f, attr_name: "sending_place", location: @engineorder.sending_place } %>
+<!-- のちほど別erbに切り出す。-->
+  <div class="field">
+    <%= f.label :sending_place_id %>
+    <%= f.fields_for :sending_place do |p| %>
+      <table>
+        <tr>
+          <td>〒</td>
+          <td><%= p.text_field :postcode , :size => 8, :disabled=> disabled_data[:sending_place] %></td>
+        </tr>
+        <tr>
+          <td>住所</td>
+          <td><%= p.text_field :address , :size => 40 , :disabled=> disabled_data[:sending_place]  %></td>
+        </tr>
+        <tr>
+          <td>TEL</td>
+          <td><%= p.text_field :phone_no , :size => 15, :disabled=> disabled_data[:sending_place]   %></td>
+        </tr>
+        <tr>
+          <td>宛先</td>
+          <td><%= p.text_field :name , :size => 20 , :disabled=> disabled_data[:sending_place] %></td>
+        </tr>
+        <tr>
+          <td>担当者</td>
+          <td><%= p.text_field :destination_name , :size => 20 , :disabled=> disabled_data[:sending_place] %></td>
+        </tr>
+      </table>
+    <% end %>
+  </div>
+<!-- のちほど別erbに切り出す。-->
 
     <div class="field">
       <%= f.label :sending_comment %><br>
@@ -118,13 +176,13 @@
 
     <div class="field">
       <%= f.label :allocated_date %><br>
-      <%= f.date_select :allocated_date, :use_month_numbers => true %>
+      <%= f.date_select :allocated_date, :use_month_numbers => true , :disabled=>disabled_data[:allocated_date], :start_year => 2005%>
     </div>
 
     <div class="field">
-      新規エンジン型式 <br>
+        <%= f.label :new_engine_model_name %><br>
       <%= text_field_tag 'engine_model_name', @engineorder.new_engine.engine_model_name, :disabled=> true %><br>
-      新規エンジンS/# <br>
+        <%= f.label :new_serialno %><br>
       <%= text_field_tag 'serialno', @engineorder.new_engine.serialno, :disabled=> true %><br>
     </div>
   </div>

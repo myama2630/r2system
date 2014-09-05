@@ -1,0 +1,69 @@
+<h1>未請求作業一覧</h1>
+
+<h3>検索条件</h3>
+
+<div class="well">
+  <%= form_tag unbilled_repairs_path, :method => :get do %>
+    <table>
+      <tr>
+        <td width="10%">請求月度</td>
+        <td width="90%">
+          <%= date_select :search, :billing_month, start_year: (Date.today.year - 2), end_year: Date.today.year, discard_day: true,
+                                                   default: {year: @searched["billing_month(1i)"], month: @searched["billing_month(2i)"]}  %>
+        </td>
+      </tr>
+    </table>
+    <br>
+    <%= submit_tag "検索" %>
+  <% end %>
+</div>
+
+<table class="table table-striped table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>ステータス</th>
+      <th>依頼No</th>
+      <th>整備依頼日</th>
+      <th>完成希望日</th>
+      <th>整備開始日</th>
+      <th>整備完了日</th>
+      <th>エンジン型式</th>
+      <th>エンジンNo.</th>
+      <% if current_user.yesOffice? || current_user.systemAdmin? %> <!-- YES本社の人の作業数だけ列を繋げる -->
+        <th class="workregist" colspan=7>作業登録</th>
+      <% elsif current_user.tender? %> <!-- 整備会社の人の作業数だけ列を繋げる -->
+        <th class="workregist" colspan=4>作業登録</th>
+      <% end %> <!-- YES拠点の人はこの画面は見られないので何もなし -->
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @repairs.each do |repair| %>
+      <tr>
+        <td class="status_col"><%= repair.engine.status.name %></td>
+        <td><%= repair.order_no %></td>
+        <td>
+          <%= repair.order_date %>
+        </td>
+        <td><%= repair.desirable_finish_date %></td>
+        <td><%= repair.start_date %></td>
+        <td>
+          <%= repair.finish_date %>
+        </td>
+        <td><%= repair.engine.engine_model_name %></td>
+        <td><%= repair.engine.serialno %></td>
+        <td class="workregist"><%= link_to '詳細', repair, class: "workregist_show"  %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% unless @repairs.empty? %>
+  <%= link_to "ファイルエクスポート" %>
+<% end %>
+
+<br>
+<%= will_paginate @repairs, :previous_label=>'≪前', :next_label=>'次≫' %>
+<br>
+<br>
+<%= link_to t('views.link_back'), root_path %>

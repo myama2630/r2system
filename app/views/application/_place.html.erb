@@ -1,0 +1,25 @@
+<%= f.label (attr_name + "_id").to_sym %><br>
+  <%= fields_for placeinfo do |p| %>
+      <table>
+        <tr>
+          <td>〒</td>
+          <td><%= p.text_field :postcode , :size => 8 %></td>
+        </tr>
+        <tr>
+          <td>住所</td>
+          <td><%= p.text_field :address , :size => 40  %></td>
+        </tr>
+        <tr>
+          <td>TEL</td>
+          <td><%= p.text_field :phone_no , :size => 15  %></td>
+        </tr>
+        <tr>
+          <td>宛先</td>
+          <td><%= p.text_field :name , :size => 20 %></td>
+        </tr>
+        <tr>
+          <td>担当者</td>
+          <td><%= p.text_field :destination_name , :size => 20 %></td>
+        </tr>
+      </table>
+  <% end %>

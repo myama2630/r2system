@@ -1,5 +1,9 @@
 R2::Application.routes.draw do
 
+  resources :paymentstatuses
+
+  resources :places
+
   get 'repairs/new/:engine_id' => 'repairs#new'
 
   get 'repairs/engineArrived/:engine_id' => 'repairs#engineArrived'
@@ -18,6 +22,12 @@ R2::Application.routes.draw do
 
   get 'engines/index' => 'engines#index'
 
+  get 'engineorders/index' => 'engineorders#index'
+
+  get 'engines/dellist' => 'engines#dellist', :as => :delengine
+
+  get 'engines/serialno_list' => 'engines#list_serialno', :as => :list_serialno
+
   get 'engineorders/engineInquiry' => 'engineorders#inquiry'
 
   get 'engineorders/engineInquiry/:id' => 'engineorders#inquiry', :as => :edit_inquery
@@ -32,6 +42,18 @@ R2::Application.routes.draw do
 
   get 'engineorders/engineReturning/:id' => 'engineorders#returning', :as => :returning
 
+  get 'engineorders/undo_allocation/:id' => 'engineorders#undo_allocation', :as => :undo_allocation
+
+  get 'engineorders/undo_ordered/:id' => 'engineorders#undo_ordered', :as => :undo_ordered
+
+  get 'engineorders/undo_shipping/:id' => 'engineorders#undo_shipping', :as => :undo_shipping
+
+  get 'unbilled_repairs/index' => 'repairs#index_unbilled', :as => :unbilled_repairs
+
+  get 'purchase_repairs/index' => 'repairs#index_purchase', :as => :purchase_repairs
+
+  get 'repairs/purchase/:id' => 'repairs#purchase'
+
   #post 'companies' =>  'companies#show'
 
   resources :engineorders
@@ -44,7 +66,7 @@ R2::Application.routes.draw do
 
   devise_for :users
   
-  #resources :enginemodels
+  resources :enginemodels
 
   resources :engines do
     get :autocomplete_engine_engine_model_name, :on => :collection

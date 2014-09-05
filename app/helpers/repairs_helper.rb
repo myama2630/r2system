@@ -20,6 +20,10 @@ module RepairsHelper
     return '/repairs/repairFinished/' +  repair.id.to_s
   end
 
+# 仕入れ登録のためのパスを生成する
+  def purchase_path(repair)
+    return '/repairs/purchase/' +  repair.id.to_s
+  end
 
 
 #画面上の編集可否を返す（受領画面）

@@ -1,5 +1,8 @@
 class RepairsController < ApplicationController
-  before_action :set_repair, only: [:show, :edit, :update, :destroy]
+  before_action :set_repair, only: [:show, :edit, :update, :destroy, :purchase]
+
+  after_action :anchor!, only: [:index, :index_unbilled, :purchase]
+  after_action :keep_anchor!, only: [:show, :new, :edit, :create, :update, :engineArrived, :repairStarted, :repairFinished, :repairOrder, :purchase]
 
   # GET /repairs
   # GET /repairs.json
@@ -48,20 +51,19 @@ class RepairsController < ApplicationController
 
     #Yes本社の場合全件表示、それ以外の場合は自社の管轄のエンジンを対象とする。
     #※管轄が変わると表示されなくなるので注意が必要…
-    unless current_user.yesOffice?
+    unless (current_user.yesOffice? || current_user.systemAdmin? )
       cond.push(arel[:company_id].eq current_user.company_id)
     end
     
     #対象のエンジン情報を取得して、そのエンジンに紐付く整備情報を取得する
-    @repairs = Repair.includes(:engine).where(cond.reduce(&:and)).order(Engine.arel_table[:enginestatus_id]).order(:updated_at).reverse_order.paginate(page: params[:page], per_page: 10)
-
+    @repairs = Repair.includes(:engine).where(cond.reduce(&:and)).order(Engine.arel_table[:enginestatus_id],Engine.arel_table[:engine_model_name],Engine.arel_table[:serialno]).paginate(page: params[:page], per_page: 10)
+    adjust_page(@repairs)
   end
 
   # GET /repairs/1
   # GET /repairs/1.json
   def show
   end
-
   # GET /repairs/new
   def new
     @repair = Repair.new
@@ -144,11 +146,20 @@ class RepairsController < ApplicationController
         @repair.order_date = Date.today
       end
 
+    # 整備完了の場合、会計ステータスに「未払い」を付与
+    if params[:commit] == t('views.buttun_repairFinished')
+      @repair.status = Paymentstatus.of_unpaid
+    end
+
+    # 仕入れの場合、会計ステータスに「支払済」を付与
+    if params[:commit] == t('views.buttun_repairpurchase')
+      @repair.status = Paymentstatus.of_paid
+    end
+
     respond_to do |format|
       if @repair.update(repair_params)
         # パラメータにenginestatus_idがあれば、エンジンのステータスを設定し、所轄をログインユーザの会社に変更する
         self.setEngineStatus
-
 		    #if !(params[:enginestatus_id].nil?)
 		    #  @repair.engine.enginestatus = Enginestatus.find(params[:enginestatus_id].to_i)
 		    #  if params[:enginestatus_id].to_i == 1
@@ -180,7 +191,7 @@ class RepairsController < ApplicationController
   def destroy
     @repair.destroy
     respond_to do |format|
-      format.html { redirect_to repairs_url }
+      format.html { redirect_to anchor_path }
       format.json { head :no_content }
     end
   end
@@ -222,16 +233,22 @@ class RepairsController < ApplicationController
       # エンジンオブジェクトの状態更新を、そのまま代入文に置き換えました。
       @repair.engine.status = Enginestatus.of_before_repair
       @repair.engine.company = current_user.company	
+      # 登録ユーザの会社を整備担当の会社とする
+      @repair.company = current_user.company
     end
     # 整備開始→整備中
     if params[:commit] == t('views.buttun_repairStarted')
       @repair.engine.status = Enginestatus.of_under_repair
       @repair.engine.company = current_user.company
+      # 登録ユーザの会社を整備担当の会社とする
+      @repair.company = current_user.company
     end
     # 整備完了→完成品
     if params[:commit] == t('views.buttun_repairFinished')
       @repair.engine.status = Enginestatus.of_finished_repair
       @repair.engine.company = current_user.company
+      # 登録ユーザの会社を整備担当の会社とする
+      @repair.company = current_user.company
     end
 
   end
@@ -248,6 +265,73 @@ class RepairsController < ApplicationController
     send_file("public/#{filename}")
   end
 
+  # 未請求作業一覧を表示する
+  def index_unbilled
+    if params[:page]
+      # ページ繰り時は、検索条件を引き継ぐ
+      @searched = session[:searched]
+    else
+      if params[:commit]
+        # 再検索時は、以前の検索条件に新しく入力された条件をマージ
+        @searched = session[:searched]
+        @searched.merge!(params[:search])
+      else
+        # 初期表示時は、当月を検索条件として設定
+        @searched = {"billing_month(1i)" => Date.today.year,
+                     "billing_month(2i)" => Date.today.month}
+        session[:searched] = @searched
+      end
+    end
+
+    year  = @searched["billing_month(1i)"].to_i  # 請求月度 (年)
+    month = @searched["billing_month(2i)"].to_i  # 請求月度 (月)
+    end_date = Date.new(year, month, 25)  # TODO: 締め日を常数定義すること
+    start_date = end_date.advance(months: -1, days: 1)  # 前月の締め日の翌日
+
+    @repairs = Repair.joins(:engine).where(
+      finish_date: start_date..end_date,
+      paymentstatus_id: Paymentstatus.of_unpaid,
+      engines: {enginestatus_id: Enginestatus.of_finished_repair}
+    ).order(:finish_date).paginate(page: params[:page], per_page: 10)
+    adjust_page(@repairs)
+  end
+
+   # 仕入れ品一覧を表示する
+  def index_purchase
+    if params[:page]
+      # ページ繰り時は、検索条件を引き継ぐ
+      @searched = session[:searched]
+    else
+      if params[:commit]
+        # 再検索時は、以前の検索条件に新しく入力された条件をマージ
+        @searched = session[:searched]
+        @searched.merge!(params[:search])
+      else
+        # 初期表示時は、当月を検索条件として設定
+        @searched = {"billing_month(1i)" => Date.today.year,
+                     "billing_month(2i)" => Date.today.month}
+        session[:searched] = @searched
+      end
+    end
+
+    year  = @searched["billing_month(1i)"].to_i  # 請求月度 (年)
+    month = @searched["billing_month(2i)"].to_i  # 請求月度 (月)
+    end_date = Date.new(year, month, 25)  # TODO: 締め日を常数定義すること
+    start_date = end_date.advance(months: -1, days: 1)  # 前月の締め日の翌日
+
+    @repairs = Repair.joins(:engine).where(
+      finish_date: start_date..end_date,
+      paymentstatus_id: Paymentstatus.of_unpaid,
+      engines: {enginestatus_id: Enginestatus.of_finished_repair}
+    ).order(:finish_date).paginate(page: params[:page], per_page: 10)
+    adjust_page(@repairs)
+
+  end
+
+  def purchase
+    set_repair
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -257,6 +341,6 @@ class RepairsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def repair_params
-      params.require(:repair).permit(:id, :issue_no, :issue_date, :arrive_date, :start_date, :finish_date, :before_comment, :after_comment, :time_of_running, :day_of_test, :returning_comment, :arrival_comment, :order_no, :order_date, :construction_no, :desirable_finish_date, :estimated_finish_date, :engine_id, :enginestatus_id, :shipped_date, :requestpaper, :checkpaper)
+      params.require(:repair).permit(:id, :issue_no, :issue_date, :arrive_date, :start_date, :finish_date, :before_comment, :after_comment, :time_of_running, :day_of_test, :returning_comment, :arrival_comment, :order_no, :order_date, :construction_no, :desirable_finish_date, :estimated_finish_date, :engine_id, :enginestatus_id, :shipped_date, :requestpaper, :checkpaper, :paymentstatus_id)
     end
 end

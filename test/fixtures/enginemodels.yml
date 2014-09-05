@@ -1,0 +1,11 @@
+enginemodel1:
+  modelcode: "エンジンモデルコード1"
+  name: "エンジンモデル名1"
+
+enginemodel2:
+  modelcode: "エンジンモデルコード2"
+  name: "エンジンモデル名2"
+
+enginemodel3:
+  modelcode: "エンジンモデルコード3"
+  name: "エンジンモデル名3"

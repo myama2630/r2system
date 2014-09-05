@@ -206,6 +206,8 @@ ja:
     #Engine was successfully updated.
     engine_imported: エンジン情報をインポートしました。
     #Imported
+    engine_importe_error: エンジン情報をインポートできません。（エンジン型式マスタに型式が登録されていません。）
+    #Import error
     engineorder_created: 流通情報を登録しました。
     #Engineorder was successfully created.
     engineorder_updated: 流通情報を更新しました。
@@ -214,3 +216,14 @@ ja:
     #Repair was successfully created.
     repair_updated: 整備情報を更新しました。
     #Repair was successfully updated.
+    engineorder_allocation_undoing?: 引当を取り消してもよろしいですか？
+    engineorder_allocation_undone: 引当を取り消しました
+    engineorder_allocation_not_undoable: 引当を取り消せません
+    engineorder_ordered_undoing?: 受注を取り消してもよろしいですか？
+    engineorder_ordered_undone: 受注を取り消しました
+    engineorder_ordered_not_undoable: 受注を取り消せません
+    engineorder_shipping_undoing?: 出荷を取り消してもよろしいですか？
+    engineorder_shipping_undone: 出荷を取り消しました
+    engineorder_shipping_not_undoable: 出荷を取り消せません
+    engine_deleted: エンジン情報を削除しました
+    engine_not_deleted: エンジン情報は削除できません

@@ -12,14 +12,14 @@
 
   <div class="field">
     <%= f.label :finish_date %><br>
-    <%= f.date_select :finish_date, :use_month_numbers => true %>
+    <%= f.date_select :finish_date, :use_month_numbers => true, :start_year => 2000 %>
   </div>
   <div class="field">
     <%= f.label :after_comment %><br>
     <%= f.text_area :after_comment %>
   </div>
   <div class="field">
-    <%= f.label :checkpaper %><br>    
+    <%= f.label :checkpaper %><br>
     <%= f.file_field :checkpaper %> 
   </div>
   <br>
@@ -28,7 +28,7 @@
     <%= f.submit :value => t('views.buttun_repairFinished'), :confirm => t('views.buttun_repairFinished')+t('views.confirm_msg') %>
   </div>
   <br>
-  <%= link_to t('views.link_back'), repairs_path %>
+  <%= link_to t('views.link_back'), anchor_path %>
 </div>
 
 
@@ -57,7 +57,7 @@
   </div>
   <div class="field">
     <%= f.label :desirable_finish_date %><br>
-    <%= f.date_select :desirable_finish_date, :use_month_numbers => true, :disabled=>disabled_data[:desirable_finish_date] %>
+    <%= f.date_select :desirable_finish_date, :use_month_numbers => true, :disabled=>disabled_data[:desirable_finish_date], :start_year => 2000 %>
   </div>
 
   <div class="field">
@@ -71,11 +71,11 @@
 
   <div class="field">
     <%= f.label :start_date %><br>
-    <%= f.date_select :start_date, :use_month_numbers => true, :disabled=>disabled_data[:start_date] %>
+    <%= f.date_select :start_date, :use_month_numbers => true, :disabled=>disabled_data[:start_date], :start_year => 2000 %>
   </div>
   <div class="field">
     <%= f.label :estimated_finish_date %><br>
-    <%= f.date_select :estimated_finish_date, :use_month_numbers => true, :disabled=>disabled_data[:estimated_finish_date] %>
+    <%= f.date_select :estimated_finish_date, :use_month_numbers => true, :disabled=>disabled_data[:estimated_finish_date], :start_year => 2000 %>
   </div>
   <div class="field">
     <%= f.label :before_comment %><br>

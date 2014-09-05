@@ -4,7 +4,10 @@ class Repair < ActiveRecord::Base
   
   # Association
   belongs_to :engine
-  
+  belongs_to :company
+  belongs_to :status, class_name: 'Paymentstatus', foreign_key: 'paymentstatus_id'
+
+
   # Upload
    mount_uploader :requestpaper, RequestpaperUploader
    mount_uploader :checkpaper, CheckpaperUploader
@@ -13,6 +16,9 @@ class Repair < ActiveRecord::Base
   # ActiveRecord のスコープ機能を使って、よく使う「作業中？」条件に名前を付けて
   # います。
   scope :opened, -> { where shipped_date: nil }
+
+  # 完了した整備のみを抽出するスコープ (完了日が設定済みなら整備完了)
+  scope :completed, -> { where.not finish_date: nil }
 
   # エンジンをセットする
   def setEngine(engine)

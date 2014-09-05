@@ -1,0 +1,27 @@
+<h1>Listing paymentstatuses</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @paymentstatuses.each do |paymentstatus| %>
+      <tr>
+        <td><%= paymentstatus.name %></td>
+        <td><%= link_to 'Show', paymentstatus %></td>
+        <td><%= link_to 'Edit', edit_paymentstatus_path(paymentstatus) %></td>
+        <td><%= link_to 'Destroy', paymentstatus, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Paymentstatus', new_paymentstatus_path %>

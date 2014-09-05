@@ -1,0 +1,432 @@
+repair1:
+  issue_no: 1
+  issue_date: <%= Date.today %>
+  arrive_date: <%= Date.today %>
+  start_date: <%= Date.today %>
+  finish_date: <%= Date.today %>
+  order_date: <%= Date.today %>
+  construction_no: 1
+  desirable_finish_date: <%= Date.today %>
+  estimated_finish_date: <%= Date.today %>
+  engine: engine7
+  company: company2
+
+repair_201408_1:
+  issue_no: "201408-001"
+  order_no: "201408-001"
+  issue_date:  "2014-08-01"
+  order_date:  "2014-08-01"
+  arrive_date: "2014-08-01"
+  start_date:  "2014-08-01"
+  finish_date: "2014-08-01"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_PAID %>
+
+repair_201408_2:
+  issue_no: "201408-002"
+  order_no: "201408-002"
+  issue_date:  "2014-08-02"
+  order_date:  "2014-08-02"
+  arrive_date: "2014-08-02"
+  start_date:  "2014-08-02"
+  finish_date: "2014-08-02"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_3:
+  issue_no: "201408-003"
+  order_no: "201408-003"
+  issue_date:  "2014-08-03"
+  order_date:  "2014-08-03"
+  arrive_date: "2014-08-03"
+  start_date:  "2014-08-03"
+  finish_date: "2014-08-03"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_4:
+  issue_no: "201408-004"
+  order_no: "201408-004"
+  issue_date:  "2014-08-04"
+  order_date:  "2014-08-04"
+  arrive_date: "2014-08-04"
+  start_date:  "2014-08-04"
+  finish_date: "2014-08-04"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_5:
+  issue_no: "201408-005"
+  order_no: "201408-005"
+  issue_date:  "2014-08-05"
+  order_date:  "2014-08-05"
+  arrive_date: "2014-08-05"
+  start_date:  "2014-08-05"
+  finish_date: "2014-08-05"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_6:
+  issue_no: "201408-006"
+  order_no: "201408-006"
+  issue_date:  "2014-08-06"
+  order_date:  "2014-08-06"
+  arrive_date: "2014-08-06"
+  start_date:  "2014-08-06"
+  finish_date: "2014-08-06"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_7:
+  issue_no: "201408-007"
+  order_no: "201408-007"
+  issue_date:  "2014-08-07"
+  order_date:  "2014-08-07"
+  arrive_date: "2014-08-07"
+  start_date:  "2014-08-07"
+  finish_date: "2014-08-07"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_8:
+  issue_no: "201408-008"
+  order_no: "201408-008"
+  issue_date:  "2014-08-08"
+  order_date:  "2014-08-08"
+  arrive_date: "2014-08-08"
+  start_date:  "2014-08-08"
+  finish_date: "2014-08-08"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_9:
+  issue_no: "201408-009"
+  order_no: "201408-009"
+  issue_date:  "2014-08-09"
+  order_date:  "2014-08-09"
+  arrive_date: "2014-08-09"
+  start_date:  "2014-08-09"
+  finish_date: "2014-08-09"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_10:
+  issue_no: "201408-010"
+  order_no: "201408-010"
+  issue_date:  "2014-08-10"
+  order_date:  "2014-08-10"
+  arrive_date: "2014-08-10"
+  start_date:  "2014-08-10"
+  finish_date: "2014-08-10"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_11:
+  issue_no: "201408-011"
+  order_no: "201408-011"
+  issue_date:  "2014-08-11"
+  order_date:  "2014-08-11"
+  arrive_date: "2014-08-11"
+  start_date:  "2014-08-11"
+  finish_date: "2014-08-11"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_12:
+  issue_no: "201408-012"
+  order_no: "201408-012"
+  issue_date:  "2014-08-12"
+  order_date:  "2014-08-12"
+  arrive_date: "2014-08-12"
+  start_date:  "2014-08-12"
+  finish_date: "2014-08-12"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_13:
+  issue_no: "201408-013"
+  order_no: "201408-013"
+  issue_date:  "2014-08-13"
+  order_date:  "2014-08-13"
+  arrive_date: "2014-08-13"
+  start_date:  "2014-08-13"
+  finish_date: "2014-08-13"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_14:
+  issue_no: "201408-014"
+  order_no: "201408-014"
+  issue_date:  "2014-08-14"
+  order_date:  "2014-08-14"
+  arrive_date: "2014-08-14"
+  start_date:  "2014-08-14"
+  finish_date: "2014-08-14"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_15:
+  issue_no: "201408-015"
+  order_no: "201408-015"
+  issue_date:  "2014-08-15"
+  order_date:  "2014-08-15"
+  arrive_date: "2014-08-15"
+  start_date:  "2014-08-15"
+  finish_date: "2014-08-15"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_16:
+  issue_no: "201408-016"
+  order_no: "201408-016"
+  issue_date:  "2014-08-16"
+  order_date:  "2014-08-16"
+  arrive_date: "2014-08-16"
+  start_date:  "2014-08-16"
+  finish_date: "2014-08-16"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_17:
+  issue_no: "201408-017"
+  order_no: "201408-017"
+  issue_date:  "2014-08-17"
+  order_date:  "2014-08-17"
+  arrive_date: "2014-08-17"
+  start_date:  "2014-08-17"
+  finish_date: "2014-08-17"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_18:
+  issue_no: "201408-018"
+  order_no: "201408-018"
+  issue_date:  "2014-08-18"
+  order_date:  "2014-08-18"
+  arrive_date: "2014-08-18"
+  start_date:  "2014-08-18"
+  finish_date: "2014-08-18"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_19:
+  issue_no: "201408-019"
+  order_no: "201408-019"
+  issue_date:  "2014-08-19"
+  order_date:  "2014-08-19"
+  arrive_date: "2014-08-19"
+  start_date:  "2014-08-19"
+  finish_date: "2014-08-19"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_20:
+  issue_no: "201408-020"
+  order_no: "201408-020"
+  issue_date:  "2014-08-20"
+  order_date:  "2014-08-20"
+  arrive_date: "2014-08-20"
+  start_date:  "2014-08-20"
+  finish_date: "2014-08-20"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_21:
+  issue_no: "201408-021"
+  order_no: "201408-021"
+  issue_date:  "2014-08-21"
+  order_date:  "2014-08-21"
+  arrive_date: "2014-08-21"
+  start_date:  "2014-08-21"
+  finish_date: "2014-08-21"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_22:
+  issue_no: "201408-022"
+  order_no: "201408-022"
+  issue_date:  "2014-08-22"
+  order_date:  "2014-08-22"
+  arrive_date: "2014-08-22"
+  start_date:  "2014-08-22"
+  finish_date: "2014-08-22"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_23:
+  issue_no: "201408-023"
+  order_no: "201408-023"
+  issue_date:  "2014-08-23"
+  order_date:  "2014-08-23"
+  arrive_date: "2014-08-23"
+  start_date:  "2014-08-23"
+  finish_date: "2014-08-23"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_24:
+  issue_no: "201408-024"
+  order_no: "201408-024"
+  issue_date:  "2014-08-24"
+  order_date:  "2014-08-24"
+  arrive_date: "2014-08-24"
+  start_date:  "2014-08-24"
+  finish_date: "2014-08-24"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_25:
+  issue_no: "201408-025"
+  order_no: "201408-025"
+  issue_date:  "2014-08-25"
+  order_date:  "2014-08-25"
+  arrive_date: "2014-08-25"
+  start_date:  "2014-08-25"
+  finish_date: "2014-08-25"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_26:
+  issue_no: "201408-026"
+  order_no: "201408-026"
+  issue_date:  "2014-08-26"
+  order_date:  "2014-08-26"
+  arrive_date: "2014-08-26"
+  start_date:  "2014-08-26"
+  finish_date: "2014-08-26"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_27:
+  issue_no: "201408-027"
+  order_no: "201408-027"
+  issue_date:  "2014-08-27"
+  order_date:  "2014-08-27"
+  arrive_date: "2014-08-27"
+  start_date:  "2014-08-27"
+  finish_date: "2014-08-27"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_28:
+  issue_no: "201408-028"
+  order_no: "201408-028"
+  issue_date:  "2014-08-28"
+  order_date:  "2014-08-28"
+  arrive_date: "2014-08-28"
+  start_date:  "2014-08-28"
+  finish_date: "2014-08-28"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_29:
+  issue_no: "201408-029"
+  order_no: "201408-029"
+  issue_date:  "2014-08-29"
+  order_date:  "2014-08-29"
+  arrive_date: "2014-08-29"
+  start_date:  "2014-08-29"
+  finish_date: "2014-08-29"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_30:
+  issue_no: "201408-030"
+  order_no: "201408-030"
+  issue_date:  "2014-08-30"
+  order_date:  "2014-08-30"
+  arrive_date: "2014-08-30"
+  start_date:  "2014-08-30"
+  finish_date: "2014-08-30"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201408_31:
+  issue_no: "201408-031"
+  order_no: "201408-031"
+  issue_date:  "2014-08-31"
+  order_date:  "2014-08-31"
+  arrive_date: "2014-08-31"
+  start_date:  "2014-08-31"
+  finish_date: "2014-08-31"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201409_1:
+  issue_no: "201409-001"
+  order_no: "201409-001"
+  issue_date:  "2014-09-01"
+  order_date:  "2014-09-01"
+  arrive_date: "2014-09-01"
+  start_date:  "2014-09-01"
+  finish_date: "2014-09-01"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201409_2:
+  issue_no: "201409-002"
+  order_no: "201409-002"
+  issue_date:  "2014-09-02"
+  order_date:  "2014-09-02"
+  arrive_date: "2014-09-02"
+  start_date:  "2014-09-02"
+  finish_date: "2014-09-02"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201409_3:
+  issue_no: "201409-003"
+  order_no: "201409-003"
+  issue_date:  "2014-09-03"
+  order_date:  "2014-09-03"
+  arrive_date: "2014-09-03"
+  start_date:  "2014-09-03"
+  finish_date: "2014-09-03"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>
+
+repair_201409_4:
+  issue_no: "201409-004"
+  order_no: "201409-004"
+  issue_date:  "2014-09-04"
+  order_date:  "2014-09-04"
+  arrive_date: "2014-09-04"
+  start_date:  "2014-09-04"
+  finish_date: "2014-09-04"
+  engine: engine7
+  company: company2
+  paymentstatus_id: <%= Paymentstatus::ID_UNPAID %>

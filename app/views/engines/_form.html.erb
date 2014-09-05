@@ -11,7 +11,7 @@
     <%= f.text_field :serialno %>
   </div>
 
-  <% if current_user.yesOffice? %>
+  <% if current_user.yesOffice? || current_user.systemAdmin?%>
     <div>
       <%= f.label :company %><br>
       <%= f.collection_select( :company_id, Company.all, :id, :name, :include_blank => false ) %><br>	<br>

@@ -175,8 +175,9 @@ end
               :style=>"color:red;",
               confirm: t("controller_msg.engineorder_shipping_undoing?")
     when Businessstatus::ID_RETURNED  # 返却済
-      # TODO: 未実装
-      link_to t("views.link_returning") + "の取り消し(未実装)", "#", :style=>"color:red;"
+      link_to t("views.link_returning") + "の取り消し", undo_returning_path(engineorder),
+              :style=>"color:red;",
+              confirm: t("controller_msg.engineorder_returning_undoing?")
     when Businessstatus::ID_CANCELED  # キャンセル
       # TODO: 未実装
       # エンジンオーダをキャンセル状態にするユースケースは無い？

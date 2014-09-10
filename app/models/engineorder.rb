@@ -166,6 +166,8 @@ class Engineorder < ActiveRecord::Base
     repair.issue_date        = self.order_date
     repair.time_of_running   = self.time_of_running
     repair.day_of_test       = self.day_of_test
+    # 整備を担当する整備会社として、旧エンジンの返却先の会社を設定
+    repair.company = self.returning_place
   end
   
   # 引当を取り消す
@@ -219,29 +221,29 @@ class Engineorder < ActiveRecord::Base
     end
   end
 
+  # 出荷を取り消す
   def undo_shipping
     # 出荷の取り消しは、
     #   1. エンジンオーダの状態 == 出荷済み
     #   2. 新エンジンの状態 == 出荷済み
-    #   3. 新エンジンの管轄 == 拠点
+    #   3. 新エンジンの管轄 == 拠点 (管轄を本社で修正する場合があるのでチェックしない)
     # が前提条件。
     # 出荷を取り消すと、以下の状態になる。
     #   1. エンジンオーダの状態 == 出荷準備中
     #   2. 新エンジンの状態 == 出荷準備中
-    #   3. 新エンジンの管轄 == 整備会社 (新エンジンを修理した会社)
-    #   4. 新エンジンに関する(直近の)修理の出荷日がブランク
+    #   3. 新エンジンの管轄 == 整備会社 (新エンジンを整備した会社)
+    #   4. 新エンジンに関する(直近の)整備の出荷日がブランク
     if self.shipped? and
-        new_engine = self.new_engine and new_engine.after_shipped? and
-        new_engine_owner = new_engine.company and new_engine_owner.base?
+        new_engine = self.new_engine and new_engine.after_shipped?
       # 新エンジンの状態を "出荷準備中" に戻す
       new_engine.status = Enginestatus.of_before_shipping
       # 新エンジンの管轄を "整備会社" に戻す
-      # 戻し先の整備会社は、新エンジンに関する直近の修理を担当した会社
+      # 戻し先の整備会社は、新エンジンに関する直近の整備を担当した会社
       if repair = new_engine.last_repair
         new_engine.company = repair.company
       end
       new_engine.save!
-      # 新エンジンに関する直近の修理の出荷日をブランクに戻す
+      # 新エンジンに関する直近の整備の出荷日をブランクに戻す
       if repair = new_engine.current_repair
         repair.shipped_date = nil
         repair.save!
@@ -252,6 +254,44 @@ class Engineorder < ActiveRecord::Base
       self.invoice_no_new = nil
       self.shipped_date = nil
       self.shipped_comment = nil
+      self.save!
+      true
+    else
+      false
+    end
+  end
+
+  # 返却を取り消す
+  def undo_returning
+    # 返却の取り消しは、
+    #   1. エンジンオーダの状態 == 返却済み
+    #   2. 旧エンジンの状態 == 受領前
+    #   3. 旧エンジンの管轄 == 整備会社 (管轄を本社で修正する場合があるのでチェックしない)
+    #   4. 旧エンジンの仕掛かり中の整備 == あり
+    # が前提条件。
+    # 返却を取り消すと、以下の状態になる。
+    #   1. エンジンオーダの状態 == 出荷済み
+    #   2. 旧エンジンの状態 == 返却予定
+    #   3. 旧エンジンの管轄 == 拠点
+    #   4. 旧エンジンの仕掛かり中の整備 == なし
+    if self.returned? and
+        old_engine = self.old_engine and old_engine.before_arrive? and
+        !old_engine.current_repair.nil?
+      # 旧エンジンの状態を "返却予定" に戻す
+      old_engine.status = Enginestatus.of_about_to_return
+      # 旧エンジンの管轄を拠点に戻す
+      old_engine.company = self.branch
+      old_engine.save!
+      # 旧エンジンに関する仕掛かり中の整備を削除する
+      if repair = old_engine.current_repair
+        repair.delete
+      end
+      # エンジンオーダの状態を "出荷済み" に戻す
+      self.status = Businessstatus.of_shipped
+      # 返却時に新規入力した項目をクリア(送り状No.、返却日、返却コメント)
+      self.invoice_no_old = nil
+      self.returning_date = nil
+      self.returning_comment = nil
       self.save!
       true
     else

@@ -1,3 +1,4 @@
+#encoding:UTF-8
 module RepairsHelper
 
   # エンジン到着登録のためのパスを生成する  

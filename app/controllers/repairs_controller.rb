@@ -1,3 +1,4 @@
+#encoding:UTF-8
 class RepairsController < ApplicationController
   before_action :set_repair, only: [:show, :edit, :update, :destroy, :purchase]
 

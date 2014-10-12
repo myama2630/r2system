@@ -4,6 +4,10 @@
   <title>R2</title>
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <!--[if lte IE 8]>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
+  <![endif]-->
   <%= csrf_meta_tags %>
 </head>
 <body>
@@ -16,9 +20,11 @@
       <div class="collapse navbar-collapse">
         <% if user_signed_in? %>
           <ul class="nav navbar-nav navbar-right">
-          <% unless request.path_info=="/" %>
-            <li><%= link_to 'メインメニュー', root_path %></li>
-          <% end %>
+            <% unless request.path_info=="/" %>
+              <li><%= link_to 'メインメニュー', root_path %></li>
+            <% end %>
+            <% contactInfo = Contactinfo.find(1) %></li>
+            <li><%= mail_to contactInfo.mailaddr, "問合せ", :subject => contactInfo.title, :body => contactInfo.content.encode("Shift_JIS") %></li>              
             <li><%= link_to "ログアウト", destroy_user_session_path, :method => :delete %></li>
             <li><a href="/users/edit"><b>ログイン：<%= current_user.name %></b></a></li>
           </ul>

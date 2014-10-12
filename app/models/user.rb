@@ -39,6 +39,12 @@ class User < ActiveRecord::Base
     return self.company.category == "整備会社"
   end
 
+  # このユーザーがシステム管理者かどうか
+  # 暫定でYES本社の人は、すべてsystemAdminの扱いにする。
+  def systemAdmin?
+    return  (self.yesOffice?) || (self.company.category =="システム管理者")
+  end
+
   # 会社を指定して、その会社のユーザのアドレスを全て;つながりで返す。
   def self.collect_emails_by_company(company)
     emails = ""

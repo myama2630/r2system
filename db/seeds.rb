@@ -40,6 +40,13 @@ Enginestatus.create([
   {name: "廃却済",     id: Enginestatus::ID_ABOLISHED}
 ])
 
+# エンジンステータスのマスターデータ
+Paymentstatus.delete_all
+Paymentstatus.create([
+  {name: "未払い",     id: Paymentstatus::ID_UNPAID},
+  {name: "支払済",     id: Paymentstatus::ID_PAID}
+])
+
 
 # 法人のデフォルト登録（削除して登録）
 Company.delete_all

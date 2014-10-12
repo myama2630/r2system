@@ -1,0 +1,20 @@
+<!--
+ エンジン入力フィールド (型式 + シリアル No.手入力)
+ [パラメータ]
+   * form          : render 元の f オブジェクト
+   * parent        : エンジンを持つオブジェクト (@engineorder など)
+   * assoc_name    : 上記 parent オブジェクトからエンジンを取り出すための関連名 (:new_engine など)
+   * include_blank : 型式の選択肢として空白を含める場合は true を指定
+-->
+
+<% engine = parent.__send__(assoc_name.intern) || parent.__send__("build_#{assoc_name}".intern) %>
+
+<%= form.fields_for assoc_name do |engine_form| %>
+  <%= engine_form.label :engine_model_name %>
+  <%= engine_form.collection_select(:engine_model_name,
+                                    ((engine.new_record? ? [] : [engine]) +
+                                     selects.map { |sym| Engine.__send__(sym) }.flatten.sort_by(&:engine_model_name)).uniq(&:engine_model_name),
+                                    :engine_model_name, :engine_model_name, include_blank: include_blank) %>
+  <%= engine_form.label :serialno %>
+  <%= engine_form.text_field :serialno, size: 10 %>
+<% end %>

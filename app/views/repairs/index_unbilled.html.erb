@@ -1,0 +1,63 @@
+<h1><%= t('views.title_repairs_index_unbilled') %></h1>
+
+<% if current_user.yesOffice? || current_user.systemAdmin? %>
+  <h3>検索条件</h3>
+  <div class="well">
+    <%= form_tag unbilled_repairs_path, :method => :get do %>
+      <table>
+        <tr>
+          <td width="80">整備会社</td>
+          <td width="120">
+            <%= collection_select(:search, :company_id, Company.all.tender, :id, :name,
+                                  include_blank: true, selected: @searched[:company_id]) %>
+          </td>
+        </tr>
+      </table>
+      <br>
+      <%= submit_tag "検索" %>
+    <% end %>
+  </div>
+<% end %>
+
+<table class="table table-striped table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th><%= Repair.human_attribute_name(:order_no) %></th>
+      <th><%= Repair.human_attribute_name(:construction_no) %></th>
+      <th><%= Repair.human_attribute_name(:finish_date) %></th>
+      <th><%= Engine.human_attribute_name(:engine_model_name) %></th>
+      <th><%= Engine.human_attribute_name(:serialno) %></th>
+      <th>繰越</th>
+      <th class="workregist" colspan=2>詳細情報</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @repairs.each do |repair| %>
+      <tr>
+        <td><%= repair.order_no %></td>
+        <td><%= repair.construction_no %></td>
+        <td><%= repair.finish_date %></td>
+        <td><%= repair.engine.engine_model_name %></td>
+        <td><%= repair.engine.serialno %></td>
+        <td><%= carry_over_mark(repair) %></td>
+        <td class="workregist"><%= link_to t('views.link_show'), repair, class: 'workregist_show' %></td>
+        <% if current_user.yesOffice? || current_user.systemAdmin? %>
+          <td class="workregist"><%= link_to t('views.link_purchase'), purchase_path(repair), class: 'workregist_edit' %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p>※は繰り越し分です</p>
+
+<% unless @repairs.empty? %>
+  <%= link_to t('views.link_csv_export'), unbilled_repairs_path(format: 'csv') %>
+<% end %>
+
+<br>
+<%= will_paginate @repairs, :previous_label=>'≪前', :next_label=>'次≫' %>
+<br>
+<br>
+<%= link_to t('views.link_back'), root_path %>

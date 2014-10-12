@@ -1,10 +1,11 @@
 <h1 class="title">エンジン一覧</h1>
 
 <h3>検索条件</h3>
-<%= form_tag engines_index_path, :method => :get do %>
+
 <div class="well">
+  <%= form_tag engines_index_path, :method => :get do %>
   <table>
-    <% if current_user.yesOffice? %>
+    <% if current_user.yesOffice? || current_user.systemAdmin? %>
       <tr>
         <td width="80" >管轄     </td>
         <td width="120"><%= collection_select(:search, :company_id, Company.all, :id, :name, :include_blank => true, :selected => @searched[:company_id]) %></td>
@@ -33,20 +34,22 @@
 <table class="table table-striped table-bordered table-condensed">
   <thead>
     <tr>
-      <th>ステータス</th>      
+      <th>ステータス</th>
       <th>エンジン型式</th>
       <th>エンジンNo.</th>
-      <% if current_user.yesOffice? %>
+      <% if current_user.yesOffice? || current_user.systemAdmin?%>
         <th>管轄</th>
       <% end %>
       <th>返却日</th>
       <th>受領日</th>
       <th>サスペンド</th>
-      <% if current_user.yesOffice? %> <!-- YES本社の人の作業数だけ列を繋げる -->
-        <th class="workregist" colspan=5>作業登録</th>
-      <% elsif current_user.tender? %> <!-- 整備会社の作業数だけ列を繋げる -->
-        <th class="workregist" colspan=1>作業登録</th>
-      <% end %>                        <!-- YES拠点の人は作業なし -->
+      <% if current_user.yesOffice? || current_user.systemAdmin?%> 
+        <th class="workregist" colspan=4>作業登録</th>
+      <% elsif current_user.tender? %> 
+        <th class="workregist" colspan=2>作業登録</th>
+      <% elsif current_user.yesBranch? %> 
+        <th class="workregist" >詳細情報</th>
+      <% end %>
     </tr>
   </thead>
 
@@ -56,7 +59,7 @@
         <td class="status_col"><%= engine.status.name %></td>
         <td><%= engine.engine_model_name	 %></td>
         <td><%= engine.serialno %></td>
-        <% if current_user.yesOffice? %>
+        <% if current_user.yesOffice? || current_user.systemAdmin? %>
           <td><%= engine.company.name unless engine.company.blank? %></td>
         <% end %>
         <td><%= engine.current_order_as_old.returning_date unless engine.current_order_as_old.nil? %></td>
@@ -64,10 +67,7 @@
         <td><%= display_suspended_or_not(engine) %></td>
 
 
-        <% unless current_user.tender? %>
-          <td class="workregist"><%= link_to '引合', new_inquiry_path(engine), class: "workregist_work" %> </td>
-        <% end %>
-
+      <% if current_user.yesOffice? || current_user.systemAdmin? || current_user.tender? %> 
         <td class="workregist-wide">
           <% if engine.before_arrive? %>
             <%= link_to '受領', engine_arrived_path(engine), class: "workregist_work" %>
@@ -75,13 +75,14 @@
             受領済
           <% end %>
         </td>
-        <% if current_user.yesOffice? %>
+       <% end %>
           <td class="workregist"><%= link_to '詳細', engine , class: "workregist_show" %></td>
+        <% if current_user.yesOffice? || current_user.systemAdmin? %>
           <td class="workregist"><%= link_to '修正', edit_engine_path(engine) , class: "workregist_edit" %></td>
           <td class="workregist"><%= link_to '削除', engine, method: :delete, data: { confirm: '本当に削除してもよろしいですか？' } , class: "workregist_del" %>
           </td>
-     　　 <% end %>  
-      　　</tr>
+        <% end %>
+      </tr>
     <% end %>
   </tbody>
 </table>
@@ -89,13 +90,17 @@
 <br>
 <%= will_paginate @engines, :previous_label=>'≪前', :next_label=>'次≫' %>
 <br>
+
+<% if current_user.yesOffice? || current_user.systemAdmin? || current_user.tender? %>
 <br>
 <%= link_to '新規登録', new_engine_path %>
 <br>
+<% end %>
+
 <br>
 <%= link_to t('views.link_back'), root_path %>
 
-<% if current_user.yesOffice? %>
+<% if current_user.yesOffice? || current_user.systemAdmin? %>
   <hr>
     <%= form_tag import_engines_path, multipart: true do %>
       <h5>【ファイルインポート】</h5>

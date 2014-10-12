@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Charge flg:</strong>
+  <%= @charge.charge_flg %>
+</p>
+
+<p>
+  <strong>Charge price:</strong>
+  <%= @charge.charge_price %>
+</p>
+
+<p>
+  <strong>Charge comment:</strong>
+  <%= @charge.charge_comment %>
+</p>
+
+<p>
+  <strong>Repair:</strong>
+  <%= @charge.repair %>
+</p>
+
+<p>
+  <strong>Engine:</strong>
+  <%= @charge.engine %>
+</p>
+
+<%= link_to 'Edit', edit_charge_path(@charge) %> |
+<%= link_to 'Back', charges_path %>

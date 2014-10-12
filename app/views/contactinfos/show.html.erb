@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>メールアドレス:</strong>
+  <%= @contactinfo.mailaddr %>
+</p>
+
+<p>
+  <strong>件名:</strong>
+  <%= @contactinfo.title %>
+</p>
+
+<p>
+  <strong>本文:</strong>
+  <%= @contactinfo.content %>
+</p>
+
+<%= link_to '編集', edit_contactinfo_path(@contactinfo) %> |
+<%= link_to 'メニューに戻る', '/' %>

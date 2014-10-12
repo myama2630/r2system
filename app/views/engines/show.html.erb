@@ -14,20 +14,58 @@
   <%= @engine.serialno %>
   </div>
 
-<% if current_user.yesOffice? %>
   <div class="field">
     <%= Engine.human_attribute_name('company') %>
   <%= @engine.company.name %>
 </div>
-<% end %>
 
   <div class="field">
     <%= Engine.human_attribute_name('status') %>
     <%= @engine.status.name %>
   </div>
 
+<br>
+<h2>整備履歴</h2>
+<table class="table table-striped table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>ステータス</th>
+      <th>依頼No</th>
+      <th>整備依頼日</th>
+      <th>完成希望日</th>
+      <th>整備開始日</th>
+      <th>整備完了日</th>
+      <th>エンジン型式</th>
+      <th>エンジンNo.</th>
+      <th>詳細</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% Repair.where(engine_id:  @engine.id).order(:order_no).reverse.each do |repair| %>
+      <tr>
+        <td class="status_col"><%= repair.engine.status.name %></td>
+        <td><%= repair.order_no %></td>
+        <td>
+          <%= repair.order_date %>
+        </td>
+        <td><%= repair.desirable_finish_date %></td>
+        <td><%= repair.start_date %></td>
+        <td>
+          <%= repair.finish_date %>
+        </td>
+        <td><%= repair.engine.engine_model_name %></td>
+        <td><%= repair.engine.serialno %></td>
+
+        <td class="workregist"><%= link_to '詳細', repair, class: "workregist_show"  %></td>
+              </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
 <br><br>
-<% if current_user.yesOffice? %>
+<% if current_user.yesOffice? || current_user.systemAdmin? %>
   <%= link_to t('views.link_edit'), edit_engine_path(@engine) %> |
 <% end %>
-<%= link_to t('views.link_back'), engines_path %>
+<%= link_to t('views.link_back'), anchor_path %>

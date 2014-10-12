@@ -1,0 +1,88 @@
+<% if current_user.yesBranch? 
+     if engineorder.branch_id == current_user.company_id
+       myBranch = true
+       otherBranch = false
+     else
+       myBranch = false
+       otherBranch = true
+      end 
+   else 
+     myBranch = false
+     otherBranch = false
+  end
+ %>
+
+
+  <td  rowspan="2" class="workregist" >
+    <% if engineorder.inquiry? && !otherBranch %>
+      <%= link_to t("views.link_inquiry"), edit_inquery_path(engineorder) , class: "workregist_work" %>
+    <% else %>
+      <%= t("views.link_inquiry") %>
+    <% end %>
+  </td>
+
+  <td  rowspan="2" class="workregist" >
+    <% if (engineorder.inquiry? || engineorder.ordered?)  && !otherBranch %>
+      <%= link_to t("views.link_ordered"), ordered_path(engineorder), class: "workregist_work" %>
+    <% else %>
+      <%= t("views.link_ordered") %>
+    <% end %>
+  </td>
+
+  <td  rowspan="2" class="workregist" >
+    <% if engineorder.inquiry? %>
+      <% # なにも表示しない %>
+    <% elsif engineorder.ordered? %>
+      <% if current_user.yesOffice? || current_user.systemAdmin? %>
+        <%= link_to t("views.link_allocated"), allocated_path(engineorder), class: "workregist_work" %>
+      <% end %>
+
+    <% elsif engineorder.shipping_preparation? %>
+      <% if current_user.yesOffice? %>
+        <%= link_to t("views.link_allocated"), allocated_path(engineorder), class: "workregist_work" %>
+      <% else %>
+        <%= t("views.link_allocated") %>
+      <% end %>
+    <% else %>
+      <%= t("views.link_allocated") %>
+    <% end %>
+  </td>
+  
+  <td  rowspan="2" class="workregist" >
+    <% if engineorder.shipping_preparation? %>
+      <% if current_user.systemAdmin? %>
+        <%= link_to t("views.link_shipped"), shipped_path(engineorder), class: "workregist_work" %>
+      <% end %>
+    <% elsif engineorder.shipped? || engineorder.returned? %>
+      <%= t("views.link_shipped") %>
+    <% end %>
+  </td>
+
+  <td  rowspan="2" class="workregist" >
+    <% if engineorder.shipped? || engineorder.returned? %>
+     <% if current_user.yesOffice? || current_user.systemAdmin? || myBranch %>
+        <%= link_to t("views.link_returning"), returning_path(engineorder), class: "workregist_work" %>
+      <% else %>
+        <%= t("views.link_returning") %>
+      <% end %>
+    <% end %>
+  </td>
+  
+  <td  rowspan="2" class="workregist" >
+    <%= link_to t("views.link_show"), engineorder, class: "workregist_show"  %>
+  </td>
+
+  <td  rowspan="2" class="workregist" >
+    <% if current_user.systemAdmin? %>
+      <%= link_to t("views.link_edit"), edit_engineorder_path(engineorder), class: "workregist_edit"  %>
+    <% end %>
+  </td>
+
+  <td  rowspan="2" class="workregist">
+   <% if engineorder.inquiry? %>
+     <% if myBranch || current_user.systemAdmin? %>
+      <%= link_to t("views.link_destroy"), engineorder, method: :delete, data: { confirm: '削除してもよろしいですか？' }, class: "workregist_del" %>
+      <% end %>
+    <% end %>
+  </td>
+

@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+unpaid:
+  id: <%= Paymentstatus::ID_UNPAID %>
+  name: "未払い"
+
+paid:
+  id: <%= Paymentstatus::ID_PAID %>
+  name: "支払済"

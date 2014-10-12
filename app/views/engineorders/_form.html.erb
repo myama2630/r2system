@@ -48,26 +48,48 @@
     <%= f.text_field :invoice_no_new %>
   </div>
 
-
   <div class="field">
     <%= f.label :inquiry_date %><br>
     <%= f.date_select :inquiry_date %>
   </div>
 
-  <% #引合登録以外の場合は、order_dateを表示 %>
-  <div class="field">
-    <%= f.label :order_date %><br>
-    <%= f.date_select :order_date %>
-  </div>
-  
-  <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch } %>
+  <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch, disabled_info: false} %>
   
   <div class="field">
     <%= f.label :salesman_id %><br>
    <%= f.collection_select( :salesman_id, User.all, :id, :name, :include_blank => false ) %>
   </div>
 
-  <%= render "location", {f: f, attr_name: "install_place", location: @engineorder.install_place } %>
+<!-- のちほど別erbに切り出す。-->
+  <div class="field">
+    <%= f.label :install_place_id %>
+    <%= f.fields_for :install_place do |p| %>
+      <table>
+        <tr>
+          <td>〒</td>
+          <td><%= p.text_field :postcode , :size => 8 %></td>
+        </tr>
+        <tr>
+          <td>住所</td>
+          <td><%= p.text_field :address , :size => 40  %></td>
+        </tr>
+        <tr>
+          <td>TEL</td>
+          <td><%= p.text_field :phone_no , :size => 15  %></td>
+        </tr>
+        <tr>
+          <td>設置先名</td>
+          <td><%= p.text_field :name , :size => 20 %></td>
+        </tr>
+        <tr>
+          <td>担当者</td>
+          <td><%= p.text_field :destination_name , :size => 20 %></td>
+        </tr>
+      </table>
+    <% end %>
+  </div>
+<!-- のちほど別erbに切り出す。-->
+
   
   <div class="field">
     <%= f.label :orderer %><br>
@@ -75,14 +97,50 @@
   </div>
 
   <div class="field">
-    <%= f.label :old_engine_id %><br>
-    <%= f.collection_select( :old_engine_id, Engine.all, :id, :engine_name, :include_blank => true ) %>
+    <%= f.label :old_engine %>
+    <%= f.fields_for :old_engine do |engine_form| %>
+      <table>
+        <tr>
+          <td><%= Engine.human_attribute_name "engine_model_name" %></td>
+          <td><%= engine_form.collection_select :engine_model_name, Enginemodel.all, :modelcode, :name, include_blank: true %></td>
+        </tr>
+        <tr>
+          <td><%= Engine.human_attribute_name "serialno" %></td>
+          <td><%= engine_form.text_field :serialno %></td>
+        </tr>
+      </table>
+    <% end %>
   </div>
 
 <% #引当登録以降の場合は、新エンジンを表示 %> 
   <div class="field">
-    <%= f.label :new_engine_id %><br>
-    <%= f.collection_select( :new_engine_id, Engine.all, :id, :engine_name, :include_blank => true ) %>
+    <%= f.label :new_engine %>
+    <%= f.fields_for :new_engine do |engine_form| %>
+      <table>
+        <tr>
+          <td><%= Engine.human_attribute_name "engine_model_name" %></td>
+          <td>
+            <% if @engineorder.new_engine && !@engineorder.new_engine.engine_model_name.blank? %>
+              <% col = [@engineorder.new_engine] + Engine.completed.to_a %>
+            <% else %>
+              <% col = Engine.completed.to_a %>
+            <% end %>
+            <%= engine_form.collection_select :engine_model_name, col.compact.uniq(&:engine_model_name), :engine_model_name, :engine_model_name, include_blank: true %>
+          </td>
+        </tr>
+        <tr>
+          <td><%= Engine.human_attribute_name "serialno" %></td>
+          <td>
+            <% if @engineorder.new_engine && !@engineorder.new_engine.serialno.blank? %>
+              <% col = [@engineorder.new_engine] + Engine.completed.where(engine_model_name: @engineorder.new_engine.engine_model_name).to_a %>
+            <% else %>
+              <% col = [] %>
+            <% end %>
+            <%= engine_form.collection_select :serialno, col.compact.uniq(&:serialno), :serialno, :serialno, {include_blank: true}, style: "width:100%" %>
+          </td>
+        </tr>
+      </table>
+    <% end %>
   </div>
 
 <!--
@@ -114,13 +172,39 @@
 <% #引当登録以降の場合は、受注日を表示 %> 
   <div class="field">
     <%= f.label :order_date %><br>
-    <%= f.date_select :order_date %>
+    <%= f.date_select :order_date, :start_year => 2005, :end_year => 2030 %>
   </div>
   
+
+<!-- のちほど別erbに切り出す。-->
   <div class="field">
-    <%= f.label :sending_place_id %><br>
-    <%= f.collection_select( :sending_place_id, Company.all, :id, :name, :include_blank => true ) %>
+    <%= f.label :sending_place_id %>
+    <%= f.fields_for :sending_place do |p| %>
+      <table>
+        <tr>
+          <td>〒</td>
+          <td><%= p.text_field :postcode , :size => 8 %></td>
+        </tr>
+        <tr>
+          <td>住所</td>
+          <td><%= p.text_field :address , :size => 40  %></td>
+        </tr>
+        <tr>
+          <td>TEL</td>
+          <td><%= p.text_field :phone_no , :size => 15  %></td>
+        </tr>
+        <tr>
+          <td>設置先名</td>
+          <td><%= p.text_field :name , :size => 20 %></td>
+        </tr>
+        <tr>
+          <td>担当者</td>
+          <td><%= p.text_field :destination_name , :size => 20 %></td>
+        </tr>
+      </table>
+    <% end %>
   </div>
+<!-- のちほど別erbに切り出す。-->
 
 
   <div class="field">
@@ -129,7 +213,7 @@
   </div>
   <div class="field">
     <%= f.label :desirable_delivery_date %><br>
-    <%= f.date_select :desirable_delivery_date %>
+    <%= f.date_select :desirable_delivery_date , :start_year => 2005 %>
   </div>
   
 <% #引当登録以降の場合は、返却コメントと出荷日を表示 %> 
@@ -139,14 +223,14 @@
   </div>
   <div class="field">
     <%= f.label :shipped_date %><br>
-    <%= f.date_select :shipped_date %>
+    <%= f.date_select :shipped_date , :start_year => 2005 %>
   </div>
   <div id="shipment location"></div>
 
   <%= f.hidden_field :businessstatus_id %>
 
   <div class="actions">
-    <%= f.submit(:confirm => t('views.confirm_msg_cmn')) %>
+    <%= f.submit data: {confirm: t('views.confirm_msg_cmn')} %>
   </div>
 <% end %>
 </body>

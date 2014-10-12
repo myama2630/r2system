@@ -5,5 +5,6 @@ require File.expand_path('../application', __FILE__)
 R2::Application.initialize!
 
 # Date format
-Date::DATE_FORMATS[:default] = '%y/%m/%d'
-Time::DATE_FORMATS[:default] = '%y/%m/%d'
+Date::DATE_FORMATS[:default] = '%Y/%m/%d'
+Time::DATE_FORMATS[:default] = '%Y/%m/%d'
+

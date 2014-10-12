@@ -9,11 +9,23 @@ ja:
     buttun_repairOrdered: 依頼
     buttun_repairStarted: 開始
     buttun_repairFinished: 完了
+    buttun_repairpurchase: 仕入
+    buttun_charge: 振替
     buttun_regist: 登録
     buttun_update: 更新
     label_runningyear: 使用年数
+    link_inquiry: 引合
+    link_ordered: 受注
+    link_allocated: 引当
+    link_shipped: 出荷
+    link_returning: 返却
+    link_purchase: 仕入登録
     link_back: 戻る
     link_edit: 修正
     link_show: 詳細
+    link_destroy: 削除
+    link_csv_export: ファイルエクスポート
     confirm_msg: 'してよろしいですか？'
     confirm_msg_cmn: 'よろしいですか？'
+    title_repairs_index_unbilled: ヤンマー未検収一覧
+    title_repairs_index_purchase: ヤンマー検収済一覧

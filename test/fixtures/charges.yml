@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+#one:
+#  charge_flg: false
+#  charge_price: 1
+#  charge_comment: MyString
+#  repair_id: 
+#  engine_id: 
+
+#two:
+#  charge_flg: false
+#  charge_price: 1
+#  charge_comment: MyString
+#  repair_id: 
+#  engine_id: 

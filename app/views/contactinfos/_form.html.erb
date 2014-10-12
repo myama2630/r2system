@@ -1,0 +1,30 @@
+<%= form_for(@contactinfo) do |f| %>
+  <% if @contactinfo.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@contactinfo.errors.count, "error") %> prohibited this contactinfo from being saved:</h2>
+
+      <ul>
+      <% @contactinfo.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :mailaddr %><br>
+    <%= f.text_field :mailaddr, :size => 60 %><br>
+    複数指定する場合はセミコロン(;)で区切ってください。
+  </div>
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title, :size => 60 %>
+  </div>
+  <div class="field">
+    <%= f.label :content %><br>
+    <%= f.text_area :content, :size => "120x5" %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

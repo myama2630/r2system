@@ -22,6 +22,11 @@ module Constants
     ID_CANCELED             = 9 # キャンセル
   end
 
+ module Paymentstatus
+    ID_UNPAID               = 1 # 未払い
+    ID_PAID                 = 2 # 支払済
+  end
+
   module Engine
     EARLIEST_START_YEAR = 1990 # 最も古いエンジンの試運転年
   end

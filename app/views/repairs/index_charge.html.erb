@@ -1,0 +1,81 @@
+<h1>振替一覧</h1>
+
+<h3>検索条件</h3>
+
+<div class="well">
+  <%= form_tag charge_repairs_path, :method => :get do %>
+    <table>
+      <tr>
+        <td>振替前/振替済</td>
+        <td>
+          <%= select :search, :charge_flg, [["振替前", "before"], ["振替後", "after"]],  :selected => @searched["charge_flg"] %>
+        </td>
+      </tr>
+      <% if current_user.yesOffice? || current_user.systemAdmin? %>
+        <tr>
+          <td>拠点</td>
+          <td>
+            <%= collection_select(:search, :company_id, Company.where(category: "YES拠点"), :id, :name, :include_blank => true,
+                :selected => @searched["company_id"]) %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+    <br>
+    <%= submit_tag "検索" %>
+  <% end %>
+</div>
+
+<table class="table table-striped table-bordered table-condensed">
+  <thead>
+    <tr>
+      <% if current_user.yesOffice? || current_user.systemAdmin? %>
+      <th>拠点</th>
+      <% end %>
+      <th><%= Repair.human_attribute_name(:order_no) %></th>
+      <th><%= Charge.human_attribute_name(:charge_date) %></th>
+      <th><%= Engine.human_attribute_name(:engine_model_name) %></th>
+      <th><%= Engine.human_attribute_name(:serialno) %></th>
+      <th><%= Engineorder.human_attribute_name(:sales_amount) %></th>
+      <th><%= Repair.human_attribute_name(:purachase_price) %></th>
+
+      <% if current_user.yesOffice? || current_user.systemAdmin? %>
+        <th colspan=2 class="workregist">作業詳細</th>
+      <% end %>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @repairs.each do |repair| %>
+      <tr>
+      <% if current_user.yesOffice? || current_user.systemAdmin? %>
+        <td><%= Company.find(repair.engine.company_id).name %></td>
+      <% end %>
+        <td><%= repair.order_no %></td>
+        <td><%= repair.charge.charge_date %></td>
+        <td><%= repair.engine.engine_model_name %></td>
+        <td><%= repair.engine.serialno %></td>
+        <td><%= number_with_delimiter(repair.engine.current_order_as_new.sales_amount) %></td>
+        <td><%= number_with_delimiter(repair.purachase_price) %></td>
+      <% if current_user.yesOffice? || current_user.systemAdmin? %>
+        <td class="workregist">
+          <%= link_to '振替', edit_charge_path(repair.charge) %>
+        </td>
+        <td class="workregist">
+          <%= link_to '取消', edit_charge_path(repair.charge) %>
+        </td>
+      <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% unless @repairs.empty? %>
+  <%= link_to t('views.link_csv_export'), charge_repairs_path(format: 'csv') %>
+<% end %>
+
+<br>
+<%= will_paginate @repairs, :previous_label=>'≪前', :next_label=>'次≫' %>
+<br>
+<br>
+<%= link_to t('views.link_back'), root_path %>

@@ -12,7 +12,7 @@ test_tarou:
   userid: YA000001
   name: てすと太郎
   category:
-  company_id: 1
+  company: company1
 
 AA000001:
   email: aa000001@test.org
@@ -24,7 +24,7 @@ AA000001:
   last_sign_in_ip: 127.0.0.1
   userid: AA000001
   name: AA の人
-  company_id: 1
+  company: company1
 
 
 KT000001:
@@ -37,7 +37,7 @@ KT000001:
   last_sign_in_ip: 127.0.0.1
   userid: KT000001
   name: KT の人
-  company_id: 8
+  company: company8
 
 SG000001:
   email: sg000001@test.org
@@ -49,4 +49,4 @@ SG000001:
   last_sign_in_ip: 127.0.0.1
   userid: SG000001
   name: SG の人
-  company_id: 2
+  company: company2

@@ -1,26 +1,40 @@
+<h1>流通情報詳細</h1>
 
+<%= render "statusrollback" %>
+<br>
+<% if current_user.yes? %>
+  <% if current_user.yesOffice? || current_user.systemAdmin? %>
+    <%= link_to t('views.link_edit'), edit_engineorder_path(@engineorder) %> |
+  <% end %>
+  <%= link_to t('views.link_back'), anchor_path %>
+<% else %>
+  <%= link_to t('views.link_back'), anchor_path %>
+<% end %>
+<br>
+<hr>
+
+<br>
  <div class="field">
    <%= Engineorder.human_attribute_name('issue_no') %>：
     <%= @engineorder.issue_no %>
   </div>
 
 
+ <div class="field">
+   <%= Engineorder.human_attribute_name('title') %>：
+  <%= @engineorder.title %>
+</div>
+
+<div class="field">
+  <%= Engineorder.human_attribute_name('businessstatus_id') %>：
+   <%= @engineorder.status.name %>
+</div>
+
+<br>
 
  <div class="field">
    <%= Engineorder.human_attribute_name('inquiry_date') %>：
   <%= @engineorder.inquiry_date %>
-</div>
-
-
- <div class="field">
-   <%= Engineorder.human_attribute_name('registered_user_id') %>：
-  <%= User.find(@engineorder.registered_user_id).name unless @engineorder.registered_user_id.blank? %>
-</div>
-
-
- <div class="field">
-   <%= Engineorder.human_attribute_name('updated_user_id') %>：
-  <%= User.find(@engineorder.updated_user_id).name unless @engineorder.updated_user_id.blank? %>
 </div>
 
 
@@ -37,8 +51,8 @@
 
 
  <div class="field">
-   <%= Engineorder.human_attribute_name('install_place_id') %>：
-  <%= Company.find(@engineorder.install_place_id).name unless @engineorder.install_place_id.blank? %>
+  <%= Engineorder.human_attribute_name('install_place_id') %>：
+  <%= Place.find(@engineorder.install_place_id).name unless @engineorder.install_place_id.blank? %>
 </div>
 
 
@@ -68,8 +82,8 @@
 
 
  <div class="field">
-   <%= Engineorder.human_attribute_name('issue_no') %>：
-  <%= @engineorder.sending_place_id %>
+   <%= Engineorder.human_attribute_name('sending_place_id') %>：
+  <%= Place.find(@engineorder.sending_place_id).name unless @engineorder.sending_place_id.blank? %>
 </div>
 
 
@@ -78,7 +92,6 @@
   <%= @engineorder.sending_comment %>
 </div>
 
-
  <div class="field">
    <%= Engineorder.human_attribute_name('desirable_delivery_date') %>：
   <%= @engineorder.desirable_delivery_date %>
@@ -86,26 +99,72 @@
 
 
  <div class="field">
-   <%= Engineorder.human_attribute_name('businessstatus_id') %>：
-  <%= Businessstatus.find(@engineorder.businessstatus_id).name %>
+   <%= Engineorder.human_attribute_name('allocated_date') %>：
+  <%= @engineorder.allocated_date %>
 </div>
 
+ <div class="field">
+   <%= Engineorder.human_attribute_name('invoice_no_new') %>：
+  <%= @engineorder.invoice_no_new %>
+</div>
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('shipped_date') %>：
+  <%= @engineorder.shipped_date %>
+</div>
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('shipped_comment') %>：
+  <%= @engineorder.shipped_comment %>
+</div>
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('invoice_no_old') %>：
+  <%= @engineorder.invoice_no_old %>
+</div>
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('returning_place_id') %>：
+  <%= Company.find(@engineorder.returning_place_id).name unless @engineorder.returning_place_id.blank? %>
+</div>
+
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('returning_date') %>：
+  <%= @engineorder.returning_date %>
+</div>
+
+ <div class="field">
+   <%= Engineorder.human_attribute_name('returning_comment') %>：
+  <%= @engineorder.returning_comment %>
+</div>
+
+<br>
 
  <div class="field">
    <%= Engineorder.human_attribute_name('new_engine_id') %>：
    <%= Engine.find(@engineorder.new_engine_id).engine_name unless @engineorder.new_engine_id.blank? %>
 </div>
 
-
+<%  unless current_user.tender?%>
  <div class="field">
    <%= Engineorder.human_attribute_name('old_engine_id') %>：
    <%= Engine.find(@engineorder.old_engine_id).engine_name unless @engineorder.old_engine_id.blank? %>
 </div>
-
-
-<% if current_user.yesOffice? %>
-  <%= link_to 'Edit', edit_engineorder_path(@engineorder) %> |
-  <%= link_to t('views.link_back'), engineorders_path %>
-<% else %>
-  <%= link_to t('views.link_back'), repairs_path %>
 <% end %>
+
+<br>
+<br>
+<hr>
+<br>
+<% if current_user.yes? %>
+  <% if current_user.yesOffice? || current_user.systemAdmin? %>
+    <%= link_to t('views.link_edit'), edit_engineorder_path(@engineorder) %> |
+  <% end %>
+  <%= link_to t('views.link_back'), anchor_path %>
+<% else %>
+  <%= link_to t('views.link_back'), anchor_path %>
+<% end %>
+
+
+<%= render "statusrollback" %>

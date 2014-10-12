@@ -11,13 +11,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140131999999) do
+ActiveRecord::Schema.define(version: 20141007001126) do
 
   create_table "businessstatuses", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "charges", force: true do |t|
+    t.boolean  "charge_flg"
+    t.integer  "charge_price"
+    t.string   "charge_comment"
+    t.integer  "repair_id"
+    t.integer  "engine_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.date     "charge_date"
+  end
+
+  add_index "charges", ["engine_id"], name: "index_charges_on_engine_id"
+  add_index "charges", ["repair_id"], name: "index_charges_on_repair_id"
 
   create_table "companies", force: true do |t|
     t.string   "name"
@@ -26,6 +40,14 @@ ActiveRecord::Schema.define(version: 20140131999999) do
     t.string   "address"
     t.string   "phone_no"
     t.string   "destination_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "contactinfos", force: true do |t|
+    t.string   "mailaddr"
+    t.string   "title"
+    t.text     "content"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -68,6 +90,7 @@ ActiveRecord::Schema.define(version: 20140131999999) do
     t.date     "allocated_date"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "sales_amount"
   end
 
   create_table "engines", force: true do |t|
@@ -83,6 +106,23 @@ ActiveRecord::Schema.define(version: 20140131999999) do
 
   create_table "enginestatuses", force: true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "paymentstatuses", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "places", force: true do |t|
+    t.string   "name"
+    t.string   "category"
+    t.string   "postcode"
+    t.string   "address"
+    t.string   "phone_no"
+    t.string   "destination_name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -109,7 +149,15 @@ ActiveRecord::Schema.define(version: 20140131999999) do
     t.string   "checkpaper"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "company_id"
+    t.integer  "paymentstatus_id"
+    t.text     "purachase_comment"
+    t.date     "purachase_date"
+    t.integer  "purachase_price"
+    t.string   "competitor_code"
   end
+
+  add_index "repairs", ["company_id"], name: "index_repairs_on_company_id"
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -125,9 +173,9 @@ ActiveRecord::Schema.define(version: 20140131999999) do
     t.string   "userid"
     t.string   "name"
     t.string   "category"
-    t.integer  "company_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "company_id"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

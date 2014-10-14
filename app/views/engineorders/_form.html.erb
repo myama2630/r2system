@@ -53,7 +53,11 @@
     <%= f.date_select :inquiry_date %>
   </div>
 
-  <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch, disabled_info: false} %>
+  <!-- 拠点 -->
+  <div class="field">
+    <%= f.label :branch_id %><br>
+    <%= f.collection_select( :branch_id, Company.all, :id, :name, {}, {:include_blank => false, :disabled => false } ) %>
+  </div>
   
   <div class="field">
     <%= f.label :salesman_id %><br>

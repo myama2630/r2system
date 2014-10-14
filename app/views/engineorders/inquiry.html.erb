@@ -24,14 +24,18 @@
     <%= f.text_field :title %>
   </div>
 
+  <!-- 引合発生日 -->
   <div class="field">
     <%= f.label :inquiry_date %><br>
     <%= f.date_select :inquiry_date, :use_month_numbers => true , :start_year => 2005%>
   </div>
 
-    <% if current_user.yesOffice? || current_user.systemAdmin? %>
-      <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch,disabled_info: false } %>
-    <% else %>
+  <!-- 拠点 -->
+  <% if current_user.yesOffice? || current_user.systemAdmin? %>
+    <%= f.label :branch_id %><br>
+    <!-- render "location", {f: f, attr_name: "branch", location: @engineorder.branch,disabled_info: false } -->
+    <%= f.collection_select(:branch_id, Company.all, :id, :name, options = {:include_blank => true} ) %>
+  <% else %>
     <% if @engineorder.branch.nil? %>
       <% order_branch_id = current_user.company_id %>
     <% else %> 
@@ -40,7 +44,7 @@
     <%= f.hidden_field(:branch_id, :value => order_branch_id) %><br>
   <% end %>
 
-
+  <!-- 営業担当者 -->
   <div class="field">
     <%= f.label :salesman_id %><br>
     <% if current_user.yesOffice? || current_user.systemAdmin? %>
@@ -52,6 +56,7 @@
   </div>
 
 <!-- のちほど別erbに切り出す。-->
+  <!-- 設置場所 -->
   <div class="field">
     <%= f.label :install_place_id %>
     <%= f.fields_for :install_place do |p| %>
@@ -81,13 +86,13 @@
   </div>
 <!-- のちほど別erbに切り出す。-->
 
-
+  <!-- 元請 -->
   <div class="field">
     <%= f.label :orderer %><br>
     <%= f.text_field :orderer %>
   </div>
 
-
+  <!-- 返却エンジン -->
   <div class="field">
     <%= f.label :old_engine %>
     <%= f.fields_for :old_engine do |engine_form| %>
@@ -104,24 +109,26 @@
     <% end %>
   </div>
 
+  <!-- 運転時間 -->
   <div class="field">
     <%= f.label :time_of_running %><br>
     <%= f.text_field :time_of_running, :value=>number_with_delimiter(@engineorder.time_of_running), style: "ime-mode:disabled;",
                      onkeyup: raw("if (/\\D/g.test(this.value)) this.value = this.value.replace(/\\D/g, '')") %>
   </div>
 
+  <!-- 試運転日 -->
   <div class="field">
     <%= f.label :day_of_test %><br>
     <%= f.date_select :day_of_test, :include_blank => true, :use_month_numbers => true , :start_year => 1990 %>
   </div>
 
-
+  <!-- コメント（交換理由） -->
   <div class="field">
     <%= f.label :change_comment %><br>
     <%= f.text_area :change_comment %>
   </div>
 
-
+  <!-- 希望納期 -->
   <div class="field">
     <%= f.label :desirable_delivery_date %><br>
     <%= f.date_select :desirable_delivery_date, :use_month_numbers => true, :start_year => 2005 %>

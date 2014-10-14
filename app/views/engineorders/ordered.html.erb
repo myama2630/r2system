@@ -1,5 +1,58 @@
 <%= javascript_include_tag "location" %>
 
+<script type="text/javascript">
+<!--
+  // 送付先のデフォルトは既存からの選択
+  var ready;
+  ready = function(){
+    sending_place_changed( 'exists' );
+    };
+  
+  $(document).ready(ready);
+  $(document).on('page:load', ready);
+
+  // 送付先を新規登録と既存からの選択の2種類選べるようにする
+  function sending_place_changed( mode ) {
+    if (mode == 'create'){
+    
+      // 新規登録の場合
+      document.getElementById('sending_name').style.display = '';
+      document.getElementById('select_sending').style.display = 'none';
+      
+      document.getElementById('sending_name').disabled     = false;
+      document.getElementById('sending_postcode').disabled = false;
+      document.getElementById('sending_address').disabled  = false;
+      document.getElementById('sending_phone_no').disabled = false;
+      document.getElementById('sending_destination_name').disabled = false;
+      document.getElementById('sending_company').disabled = false;
+      
+      document.getElementById('sending_name').value = "";
+      document.getElementById('sending_postcode').value = "";
+      document.getElementById('sending_address').value = "";
+      document.getElementById('sending_phone_no').value = "";
+      document.getElementById('sending_destination_name').value = "";
+
+      }
+    if (mode == 'exists'){
+
+      // 既存から選択の場合の場合
+      document.getElementById('sending_name').style.display = 'none'; 
+      document.getElementById('select_sending').style.display = '';
+
+      document.getElementById('sending_name').disabled     = true;
+      document.getElementById('sending_postcode').disabled = true;
+      document.getElementById('sending_address').disabled  = true;
+      document.getElementById('sending_phone_no').disabled = true;
+      document.getElementById('sending_destination_name').disabled = true;
+      document.getElementById('sending_company').disabled  = true;
+     
+      placeChanged('sending')
+      
+      }
+  }
+//-->  
+</script>
+
 <h1>受注登録</h1>
 
 <%= form_for(@engineorder) do |f| %>
@@ -32,6 +85,7 @@
     <%= f.text_field :title %>
   </div>
 <br>
+  <!-- 受注日 -->
   <div class="field">
     <%= f.label :order_date %><br>
     <%= f.date_select :order_date, :use_month_numbers => true, :start_year => 2005 %>
@@ -42,6 +96,7 @@
   </div>
 <br>
 <!-- のちほど別erbに切り出す。-->
+  <!-- 設置場所 -->
   <div class="field">
     <%= f.label :install_place_id %>
     <%= f.fields_for :install_place do |p| %>
@@ -71,44 +126,53 @@
   </div>
 <!-- のちほど別erbに切り出す。-->
 
-
+  <!-- 元請 -->
   <div class="field">
     <%= f.label :orderer %><br>
     <%= f.text_field :orderer %>
   </div>
 
-<!-- のちほど別erbに切り出す。-->
+  <!-- 送付先 -->
   <div class="field">
-    <%= f.label :sending_place_id %>
-    <%= f.fields_for :sending_place do |p| %>
+    <!-- Gem "need label"では対応できないので、直接クラスを設定しています -->
+    <%= f.label :sending_place_id, :class => "need-label" %><br>
+    <input type="radio" name="sending_place" value="select" checked onclick="javascript:sending_place_changed('exists');">既存から選ぶ
+    <input type="radio" name="sending_place" value="new"            onclick="javascript:sending_place_changed('create');"   >新規に登録する
+
+    <br>
       <table>
+        <tr id="select_sending_cell" >
+          <td>名称</td>
+          <td >
+            <%= f.collection_select( :sending_place_id, Place.where(:company_id => current_user.company_id), :id, :name, options = {:include_blank => true, :id => :select_sending },html_options = {:onchange => 'placeChanged(\'sending\')', :id => :select_sending }  ) %>
+        <%= f.fields_for :sending_place do |p| %>
+            <%= p.text_field :name, :size => 20, :id => :sending_name %>
+          </td>
+        </tr>
         <tr>
           <td>〒</td>
-          <td><%= p.text_field :postcode , :size => 8, :disabled=> disabled_data[:sending_place] %></td>
+          <td><%= p.text_field :postcode , :size => 8, :disabled=> disabled_data[:sending_place], :id => :sending_postcode %></td>
         </tr>
         <tr>
           <td>住所</td>
-          <td><%= p.text_field :address , :size => 40 , :disabled=> disabled_data[:sending_place]  %></td>
+          <td><%= p.text_field :address , :size => 40 , :disabled=> disabled_data[:sending_place], :id => :sending_address %></td>
         </tr>
         <tr>
           <td>TEL</td>
-          <td><%= p.text_field :phone_no , :size => 15, :disabled=> disabled_data[:sending_place]   %></td>
-        </tr>
-        <tr>
-          <td>宛先</td>
-          <td><%= p.text_field :name , :size => 40 , :disabled=> disabled_data[:sending_place] %></td>
+          <td><%= p.text_field :phone_no , :size => 15, :disabled=> disabled_data[:sending_place], :id => :sending_phone_no %></td>
         </tr>
         <tr>
           <td>担当者</td>
-          <td><%= p.text_field :destination_name , :size => 20 , :disabled=> disabled_data[:sending_place] %></td>
+          <td><%= p.text_field :destination_name , :size => 20 , :disabled=> disabled_data[:sending_place], :id => :sending_destination_name  %></td>
         </tr>
       </table>
+      <%= p.hidden_field :company_id, :value => current_user.company_id, :id => :sending_company %>
     <% end %>
   </div>
-<!-- のちほど別erbに切り出す。-->
 
   <div class="field">
-    <%= f.label :sending_comment %><br>
+    <!-- Gem "need label"では対応できないので、直接クラスを設定しています -->
+    <%= f.label :sending_comment, :class => "need-label" %><br>
     <%= f.text_area :sending_comment %>
   </div>
   <div class="field">
@@ -126,25 +190,30 @@
 </div>
 <div class="well col-sm-7">
 
+  <!-- 引合発生日 -->
   <div class="field">
     <%= f.label :inquiry_date %><br>
     <%= f.date_select :inquiry_date, :use_month_numbers => true, :disabled=> disabled_data[:inquiry_date], :start_year => 2005 %>
   </div>
 
-  <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch , disabled_info: disabled_data[:branch]} %>
+  <div class="field">
+    <%= f.label :branch_id %><br>
+    <%= f.collection_select( :branch_id, Company.all, :id, :name, {}, {:include_blank => false, :disabled => disabled_data[:branch] } ) %>
+    <!-- render "location", {f: f, attr_name: "branch", location: @engineorder.branch , disabled_info: disabled_data[:branch]} -->
+  </div>
 
   <div class="field">
     <%= f.label :salesman_id %><br>
-   <%= f.collection_select( :salesman_id, User.all, :id, :name, {}, {:include_blank => false,:disabled => disabled_data[:salesman_id] } ) %>
+    <%= f.collection_select( :salesman_id, User.all, :id, :name, {}, {:include_blank => false,:disabled => disabled_data[:salesman_id] } ) %>
   </div>
 
-    <div class="field">
-      <%= f.label :old_engine_model_name %><br>
-      <%= text_field_tag 'engine_model_name', @engineorder.old_engine.engine_model_name, :disabled=>true %><br>
-      <%= f.label :old_serialno %><br>
-      <%= text_field_tag 'serialno', @engineorder.old_engine.serialno, :disabled=>true %><br>
-     </div>
-
+  <!-- エンジンの情報 -->
+  <div class="field">
+    <%= f.label :old_engine_model_name %><br>
+    <%= text_field_tag 'engine_model_name', @engineorder.old_engine.engine_model_name, :disabled=>true %><br>
+    <%= f.label :old_serialno %><br>
+    <%= text_field_tag 'serialno', @engineorder.old_engine.serialno, :disabled=>true %><br>
+  </div>
 
   <div class="field">
     <%= f.label :time_of_running %><br>

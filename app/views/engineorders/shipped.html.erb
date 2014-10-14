@@ -66,7 +66,11 @@
       <%= f.date_select :inquiry_date, :use_month_numbers => true, :disabled=>disabled_data[:inquiry_date], :start_year => 2005 %>
     </div>
 
-    <%= render "location", {f: f, attr_name: "branch", location: @engineorder.branch, disabled_info: disabled_data[:branch]  } %>
+  <div class="field">
+    <%= f.label :branch_id %><br>
+    <%= f.collection_select( :branch_id, Company.all, :id, :name, {}, {:include_blank => false, :disabled => disabled_data[:branch] } ) %>
+    <!-- render "location", {f: f, attr_name: "branch", location: @engineorder.branch , disabled_info: disabled_data[:branch]} -->
+  </div>
 
     <div class="field">
       <%= f.label :salesman_id %><br>

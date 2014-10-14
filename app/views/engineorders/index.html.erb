@@ -87,7 +87,9 @@
 <%= will_paginate @engines, :previous_label=>'≪前', :next_label=>'次≫' %>
 <br>
 <br>
-<%= link_to '新規引合',  :controller => "engineorders", :action => "inquiry" %>
+<!-- 新規引合はリンクをボタンに変更-->
+<!-- link_to   '新規引合', :controller => "engineorders", :action => "inquiry" -->
+<%= button_to "新規引合", {:controller => "engineorders", :action => "inquiry"}, :method => :get %>
 <br>
 <br>
 <%= link_to t('views.link_back'), root_path %>
